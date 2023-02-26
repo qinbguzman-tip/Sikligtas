@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Sikligtas</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="continue_text">Continue</string>
+    <string name="permission_description">Welcome to Sikligtas App. We must first ask your permission to access your location before using the application. Otherwise, we will not be able to offer our service to you.  If you agree and wish to continue tap on the button below.</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="reset">Reset</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="tap_on_my_location_button">Tap on my Location Button</string>
+    <string name="distance">Distance</string>
+    <string name="time">Time</string>
+    <string name="result">%1$s km</string>
+</resources>
