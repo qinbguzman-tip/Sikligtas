@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "527542792572",
+    "project_id": "sikligtas-app-58d98",
+    "storage_bucket": "sikligtas-app-58d98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527542792572:android:59f057cf8b2d951a8074f9",
+        "android_client_info": {
+          "package_name": "com.example.sikligtas_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527542792572-evt8i7jtg6dsk16k7ji8o7huol4hjvm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVL4_8iHLOWKN8yqlHvnvm0uRNADqe-Lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527542792572-evt8i7jtg6dsk16k7ji8o7huol4hjvm2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
