@@ -7,9 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#717971</color>
 
     <color name="seed">#05E177</color>
     <color name="outline">#00a656</color>
+    <color name="md_theme_light_card_primary">#00803F</color>
+    <color name="md_theme_light_card_secondary">#F5FFF3</color>
     <color name="md_theme_light_primary">#006D36</color>
     <color name="md_theme_light_primaryContainer">#60FF99</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
