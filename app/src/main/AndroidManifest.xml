@@ -24,7 +24,7 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true">
         </activity>
         <meta-data
