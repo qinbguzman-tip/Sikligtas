@@ -1,7 +1,11 @@
 package com.example.sikligtas.ui.maps
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
+import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 
@@ -11,6 +15,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -23,26 +29,33 @@ import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_START
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_STOP
+import com.example.sikligtas.util.Constants.LOCATION_PERMISSION_REQUEST_CODE
+import com.example.sikligtas.util.Constants.REQUEST_CHECK_SETTINGS
 import com.example.sikligtas.util.ExtensionFunctions.disable
 import com.example.sikligtas.util.ExtensionFunctions.enable
 import com.example.sikligtas.util.ExtensionFunctions.hide
 import com.example.sikligtas.util.ExtensionFunctions.show
 import com.example.sikligtas.util.Permissions.hasBackgroundLocationPermission
 import com.example.sikligtas.util.Permissions.requestBackgroundLocationPermission
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.tapadoo.alerter.Alerter
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, OnMarkerClickListener,
+class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
+    OnMarkerClickListener,
     EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentMapsBinding? = null
@@ -79,6 +92,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.resetButton.setOnClickListener {
             onResetButtonClicked()
         }
+        binding.alertButton.setOnClickListener {
+            Alerter.create(requireActivity())
+                .setTitle("Hazard Alert")
+                .setText("In 300m, there is an approaching vehicle on your right")
+                .setBackgroundColorRes(R.color.md_theme_light_error)
+                .setIcon(R.drawable.ic_left_arrow)
+                .show()
+        }
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -90,23 +111,98 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val locationSettingsRequest = LocationSettingsRequest.Builder()
+                .addLocationRequest(LocationRequest.create())
+                .build()
+
+            val settingsClient = LocationServices.getSettingsClient(requireActivity())
+            settingsClient.checkLocationSettings(locationSettingsRequest)
+                .addOnSuccessListener {
+                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                        if (location != null) {
+                            val currentLatLng = LatLng(location.latitude, location.longitude)
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    if (exception is ResolvableApiException) {
+                        try {
+                            exception.startResolutionForResult(requireActivity(), REQUEST_CHECK_SETTINGS)
+                        } catch (sendEx: IntentSender.SendIntentException) {
+                            // Ignore the error.
+                        }
+                    }
+                }
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
     }
 
     @SuppressLint("MissingPermission")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        val currentLatLng = LatLng(location.latitude, location.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+                    }
+                }
+            } else {
+                Toast.makeText(requireContext(), "Location settings are not enabled", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.isMyLocationEnabled = true
         map.setOnMyLocationButtonClickListener(this)
         map.setOnMarkerClickListener(this)
+        lifecycleScope.launch{
+            binding.startButton.show()
+        }
         map.uiSettings.apply {
             isZoomControlsEnabled = false
             isZoomGesturesEnabled = false
             isRotateGesturesEnabled = false
             isTiltGesturesEnabled = false
-            isCompassEnabled = false
+            isCompassEnabled = true
             isScrollGesturesEnabled = false
         }
+        setMapStyle(map)
         observeTrackerService()
+    }
+
+    private fun setMapStyle(googleMap: GoogleMap) {
+        try {
+            val success = googleMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.map_style
+                )
+            )
+            if (!success) {
+                Log.d("MapStyle", "Failed to add Style.")
+            }
+        } catch (e: Exception) {
+            Log.d("MapStyle", e.toString())
+        }
     }
 
     private fun observeTrackerService() {
@@ -169,6 +265,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startButton.disable()
             binding.startButton.hide()
             binding.stopButton.show()
+            binding.alertButton.show()
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -178,6 +275,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         binding.stopButton.hide()
         binding.startButton.show()
+        binding.alertButton.hide()
     }
 
     private fun onResetButtonClicked() {
@@ -274,16 +372,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     @SuppressLint("MissingPermission")
     private fun mapReset() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
-            val lastKnownLocation = LatLng(
-                it.result.latitude,
-                it.result.latitude
-            )
+//            val lastKnownLocation = LatLng(
+//                it.result.latitude,
+//                it.result.latitude
+//            )
             for (polyline in polylineList) {
                 polyline.remove()
             }
             map.animateCamera(
                 CameraUpdateFactory.newCameraPosition(
-                    setCameraPosition(lastKnownLocation)
+                    setCameraPosition(locationList.last())
                 )
             )
             locationList.clear()
@@ -296,12 +394,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        binding.hintTextView.animate().alpha(0f).duration = 1500
-        lifecycleScope.launch {
-            delay(2500)
-            binding.hintTextView.hide()
-            binding.startButton.show()
-        }
         return false
     }
 
