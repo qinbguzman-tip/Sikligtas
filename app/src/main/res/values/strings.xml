@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sikligtas-App</string>
+    <string name="app_name">Sikligtas</string>
     <string name="forgotPassword"><u>Forgot your Password?</u></string>
     <string name="sign_up">Don\'t have an account? <u>Sign Up</u></string>
     <string name="login">Already have an account? <u>Login</u></string>

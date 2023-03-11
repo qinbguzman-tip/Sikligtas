@@ -5,58 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_theme_light_card_secondary"
-    tools:context=".HomeActivity">
+    tools:context=".fragment.Home">
 
-    <LinearLayout
-        android:id="@+id/greetlbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="60dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/textgreet"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/greetlbl"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope_bold"
-            android:text="Hello,"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:fontFamily="@font/manrope_bold"
-            android:text="User"
-            android:textColor="@color/md_theme_light_primary"
-            android:textSize="25sp" />
+            <TextView
+                android:id="@+id/textgreet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_bold"
+                android:text="Hello,"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
 
-        <TextView
-            android:id="@+id/exclamation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope_bold"
-            android:text="!"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/manrope_bold"
+                android:text="User"
+                android:textColor="@color/md_theme_light_primary"
+                android:textSize="25sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/signOutBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_marginStart="125dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/exclamation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_bold"
+                android:text="!"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+        </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/weatherCard"
-        android:layout_width="362dp"
-        android:layout_height="161dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:cardBackgroundColor="@color/md_theme_light_card_primary"
         app:cardCornerRadius="20dp"
@@ -70,9 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_vertical|start"
             android:layout_marginStart="30dp"
             android:orientation="vertical">
-
             <ImageView
                 android:id="@+id/weatherIC"
                 android:layout_width="wrap_content"
@@ -80,36 +80,57 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/partly_cloudy" />
 
-            <TextView
-                android:id="@+id/temp"
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/manrope_bold"
+                    android:text="25°C"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintTop_toBottomOf="parent" />
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:text="Partly Cloudy"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toTopOf="@+id/temp" />
+
+            <ProgressBar
+                android:id="@+id/loader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/manrope_bold"
-                android:text="25°C"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/errorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/manrope_semibold"
-                android:text="Partly Cloudy"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:layout_centerInParent="true"
+                android:text="Something went wrong"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/locationLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="200dp"
-            android:layout_marginEnd="30dp"
             android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
             android:orientation="horizontal">
 
             <TextView
@@ -127,8 +148,8 @@
                 android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
                 app:srcCompat="@drawable/location_pin" />
         </LinearLayout>
 
@@ -139,6 +160,7 @@
             android:layout_marginStart="150dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="30dp"
+            android:layout_gravity="end"
             android:orientation="vertical">
 
             <TextView
@@ -174,6 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="3dp"
+                android:layout_marginBottom="20dp"
                 android:fontFamily="@font/manrope"
                 android:letterSpacing="0.5"
                 android:text="Sikligtas"
@@ -186,8 +209,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/travelCard"
-        android:layout_width="362dp"
-        android:layout_height="135dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:cardBackgroundColor="@color/md_theme_light_card_secondary"
         app:cardCornerRadius="20dp"
@@ -363,12 +386,13 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/connectivityCard"
-        android:layout_width="362dp"
-        android:layout_height="230dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="20dp"
-        app:cardElevation="5dp"
+        app:cardElevation="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/travelCard">
@@ -378,26 +402,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Device Information"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="15dp"
-            android:textAlignment="center"
+            android:layout_margin="20dp"
+            android:padding="10dp"
+            android:layout_gravity="center|top"
             android:fontFamily="@font/manrope_extrabold"
             android:textSize="16sp"
             android:letterSpacing="0.05"
             android:textColor="@color/md_theme_light_primary"/>
-
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp">
+            android:padding="10dp"
+            android:layout_margin="25dp">
 
             <ImageView
                 android:id="@+id/connectivity_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_gravity="center_vertical|center_horizontal"
                 app:srcCompat="@drawable/not_connected_icon" />
 
             <TextView
@@ -405,8 +431,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No Device Connected"
-                android:layout_marginTop="15dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical|center_horizontal"
                 android:fontFamily="@font/manrope_extrabold"
                 android:textAllCaps="true"
                 android:textSize="11sp"
@@ -419,7 +444,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tap to Connect"
                 android:layout_marginTop="5dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical|center_horizontal"
                 android:fontFamily="@font/manrope_extrabold"
                 android:textAllCaps="true"
                 android:textSize="11sp"
@@ -429,5 +454,5 @@
 
     </androidx.cardview.widget.CardView>
 
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

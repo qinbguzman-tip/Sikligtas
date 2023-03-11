@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_menu"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.sikligtas_app.fragment.Home"
+        android:label="rs_frag_home"
+        tools:layout="@layout/rs_frag_home" >
+        <action
+            android:id="@+id/action_home_to_signInActivity"
+            app:destination="@id/signInActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/signInActivity"
+        android:name="com.example.sikligtas_app.SignInActivity"
+        android:label="activity_signin"
+        tools:layout="@layout/activity_signin" />
+    <fragment
+        android:id="@+id/settingsFrag"
+        android:name="com.example.sikligtas_app.fragment.Settings"
+        android:label="rs_frag_settings"
+        tools:layout="@layout/rs_frag_settings" >
+        <action
+            android:id="@+id/action_settingsFrag_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_settingsFrag_to_historyFrag"
+            app:destination="@id/historyFrag" />
+        <action
+            android:id="@+id/action_settingsFrag_to_profileFrag"
+            app:destination="@id/profileFrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyFrag"
+        android:name="com.example.sikligtas_app.fragment.History"
+        android:label="rs_frag_history"
+        tools:layout="@layout/rs_frag_history" >
+        <action
+            android:id="@+id/action_historyFrag_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_historyFrag_to_settingsFrag"
+            app:destination="@id/settingsFrag" />
+        <action
+            android:id="@+id/action_historyFrag_to_profileFrag"
+            app:destination="@id/profileFrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFrag"
+        android:name="com.example.sikligtas_app.fragment.Profile"
+        android:label="rs_frag_profile"
+        tools:layout="@layout/rs_frag_profile" >
+        <action
+            android:id="@+id/action_profileFrag_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_profileFrag_to_settingsFrag"
+            app:destination="@id/settingsFrag" />
+        <action
+            android:id="@+id/action_profileFrag_to_historyFrag"
+            app:destination="@id/historyFrag" />
+    </fragment>
+
+</navigation>
