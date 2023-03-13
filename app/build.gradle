@@ -5,8 +5,8 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
-//    id 'dagger.hilt.android.plugin'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -25,6 +25,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     buildTypes {
@@ -82,4 +83,18 @@ dependencies {
 
     // Alerter
     implementation 'com.github.tapadoo:alerter:7.2.4'
+
+    // CardView
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+
+    // API Support
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-auth:21.1.0'
 }

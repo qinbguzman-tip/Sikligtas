@@ -18,12 +18,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.FragmentMapsBinding
 import com.example.sikligtas.service.TrackerService
+import com.example.sikligtas.ui.home.HomeFragment
 import com.example.sikligtas.ui.maps.MapUtil.calculateElapsedTime
 import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
@@ -45,9 +47,11 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
+import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tapadoo.alerter.Alerter
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
@@ -73,6 +77,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var markerList = mutableListOf<Marker>()
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,6 +88,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.tracking = this
+
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
+        drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
+
+        bottomNavigationView.visibility = View.GONE
 
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
@@ -112,7 +123,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
 
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
@@ -136,7 +148,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 .addOnFailureListener { exception ->
                     if (exception is ResolvableApiException) {
                         try {
-                            exception.startResolutionForResult(requireActivity(), REQUEST_CHECK_SETTINGS)
+                            exception.startResolutionForResult(
+                                requireActivity(),
+                                REQUEST_CHECK_SETTINGS
+                            )
                         } catch (sendEx: IntentSender.SendIntentException) {
                             // Ignore the error.
                         }
@@ -163,7 +178,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Location settings are not enabled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Location settings are not enabled",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -174,7 +193,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         map.isMyLocationEnabled = true
         map.setOnMyLocationButtonClickListener(this)
         map.setOnMarkerClickListener(this)
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             binding.startButton.show()
         }
         map.uiSettings.apply {
@@ -420,6 +439,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     override fun onDestroyView() {
         super.onDestroyView()
+        bottomNavigationView.visibility = View.VISIBLE
         _binding = null
     }
 

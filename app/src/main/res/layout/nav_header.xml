@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:gravity="bottom"
+    android:padding="16dp"
+    android:background="@color/md_theme_light_card_secondary">
+
+    <ImageView
+        android:layout_width="97dp"
+        android:layout_height="89dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/logo_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sikligtas"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:letterSpacing="0.2"
+        android:fontFamily="@font/manrope_extrabold"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Be Safe, Ride Safe"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        android:textAllCaps="true"
+        android:fontFamily="@font/manrope"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

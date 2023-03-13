@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.findNavController
 import com.example.sikligtas.R
 import com.example.sikligtas.util.Permissions.hasLocationPermission
 import com.example.sikligtas.util.Permissions.requestLocationPermission
 import com.example.sikligtas.databinding.FragmentPermissionBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
@@ -18,6 +20,9 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: FragmentPermissionBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var drawerLayout: DrawerLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,9 +30,14 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         // Inflate the layout for this fragment
         _binding = FragmentPermissionBinding.inflate(inflater, container, false)
 
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
+        drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
+
+        bottomNavigationView.visibility = View.GONE
+
         binding.continueButton.setOnClickListener {
             if (hasLocationPermission(requireContext())) {
-                findNavController().navigate(R.id.action_permissionFragment_to_mapsFragment)
+                findNavController().navigate(R.id.action_permissionFragment_to_homeFragment)
             } else {
                 requestLocationPermission(this)
             }
@@ -54,7 +64,7 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        findNavController().navigate(R.id.action_permissionFragment_to_mapsFragment)
+        findNavController().navigate(R.id.action_permissionFragment_to_homeFragment)
     }
 
     override fun onDestroyView() {

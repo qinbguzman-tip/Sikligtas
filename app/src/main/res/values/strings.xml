@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Sikligtas</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="continue_text">Continue</string>
     <string name="permission_description">Welcome to Sikligtas App. We must first ask your permission to access your location before using the application. Otherwise, we will not be able to offer our service to you.  If you agree and wish to continue tap on the button below.</string>
@@ -12,4 +11,8 @@
     <string name="distance">Distance</string>
     <string name="time">Time</string>
     <string name="result">%1$s km</string>
+    <string name="forgotPassword"><u>Forgot your Password?</u></string>
+    <string name="sign_up">Don\'t have an account? <u>Sign Up</u></string>
+    <string name="login">Already have an account? <u>Login</u></string>
+    <!--    <string name="default_web_client_id">527542792572-1dkumdl4obgekls3v49ocbd2c1r3ae9f.apps.googleusercontent.com</string>-->
 </resources>
