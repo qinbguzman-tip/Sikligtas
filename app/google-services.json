@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "527542792572",
-    "project_id": "sikligtas-app-58d98",
-    "storage_bucket": "sikligtas-app-58d98.appspot.com"
+    "project_number": "85017394998",
+    "project_id": "sikligtas",
+    "storage_bucket": "sikligtas.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:527542792572:android:59f057cf8b2d951a8074f9",
+        "mobilesdk_app_id": "1:85017394998:android:634c34520a60d83baefd97",
         "android_client_info": {
           "package_name": "com.example.sikligtas"
         }
       },
       "oauth_client": [
         {
-          "client_id": "527542792572-3bkfckuk0hikg132ba2rg8an303913ca.apps.googleusercontent.com",
+          "client_id": "85017394998-ompjc3vhniof361t9t3ugh5dddqtnfur.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.sikligtas",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "527542792572-1dkumdl4obgekls3v49ocbd2c1r3ae9f.apps.googleusercontent.com",
+          "client_id": "85017394998-vf6ph2nl68n3olmsgqv35ddre3iu55tp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAVL4_8iHLOWKN8yqlHvnvm0uRNADqe-Lc"
+          "current_key": "AIzaSyBwqYQjP3NLgQrfE5e1ELK2akqINQgVNTA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "527542792572-1dkumdl4obgekls3v49ocbd2c1r3ae9f.apps.googleusercontent.com",
+              "client_id": "85017394998-vf6ph2nl68n3olmsgqv35ddre3iu55tp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
