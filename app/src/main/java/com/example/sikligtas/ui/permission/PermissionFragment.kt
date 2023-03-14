@@ -34,7 +34,6 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
 
         bottomNavigationView.visibility = View.GONE
-        drawerLayout.visibility = View.GONE
 
         binding.continueButton.setOnClickListener {
             if (hasLocationPermission(requireContext())) {
@@ -71,7 +70,6 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
-        drawerLayout.visibility = View.VISIBLE
         _binding = null
     }
 
