@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.media.MediaPlayer
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -79,6 +80,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +96,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         bottomNavigationView.visibility = View.GONE
 
+        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
+
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
         }
@@ -102,14 +106,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         binding.resetButton.setOnClickListener {
             onResetButtonClicked()
-        }
-        binding.alertButton.setOnClickListener {
-            Alerter.create(requireActivity())
-                .setTitle("Hazard Alert")
-                .setText("In 300m, there is an approaching vehicle on your right")
-                .setBackgroundColorRes(R.color.md_theme_light_error)
-                .setIcon(R.drawable.ic_left_arrow)
-                .show()
         }
 
         fusedLocationProviderClient =
@@ -125,6 +121,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
+
+        binding.alertButton.setOnClickListener {
+            mediaPlayer.start()
+
+            Alerter.create(requireActivity())
+                .setTitle("Hazard Alert")
+                .setText("In 300m, there is an approaching vehicle on your right")
+                .setBackgroundColorRes(R.color.md_theme_light_error)
+                .setIcon(R.drawable.ic_left_arrow)
+                .show()
+        }
 
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
@@ -441,6 +450,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
         _binding = null
+    }
+
+    override fun onDestroy() {
+        mediaPlayer.release()
+        super.onDestroy()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
