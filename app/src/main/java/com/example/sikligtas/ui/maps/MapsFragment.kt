@@ -96,8 +96,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         bottomNavigationView.visibility = View.GONE
 
-        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
-
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
         }
@@ -122,7 +120,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
+        mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
 
         binding.alertButton.setOnClickListener {
             mediaPlayer.start()
