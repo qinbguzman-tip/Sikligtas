@@ -14,5 +14,12 @@
     <string name="forgotPassword"><u>Forgot your Password?</u></string>
     <string name="sign_up">Don\'t have an account? <u>Sign Up</u></string>
     <string name="login">Already have an account? <u>Login</u></string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="hello_there">Hello there,</string>
+    <string name="type_your_email">Type your Email</string>
+    <string name="type_your_password">Type Your Password</string>
+    <string name="login_button">Login</string>
+    <string name="or">OR</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
     <!--    <string name="default_web_client_id">527542792572-1dkumdl4obgekls3v49ocbd2c1r3ae9f.apps.googleusercontent.com</string>-->
 </resources>

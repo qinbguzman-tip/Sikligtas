@@ -22,10 +22,10 @@
             android:icon="@drawable/baseline_history_24"
             android:title="History"/>
 
-        <item
-            android:id="@+id/settingsFragment"
-            android:icon="@drawable/round_settings_24"
-            android:title="Settings"/>
+<!--        <item-->
+<!--            android:id="@+id/settingsFragment"-->
+<!--            android:icon="@drawable/round_settings_24"-->
+<!--            android:title="Settings"/>-->
     </group>
 
     <item android:title="">
