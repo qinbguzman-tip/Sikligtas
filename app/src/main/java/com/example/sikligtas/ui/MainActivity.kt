@@ -98,9 +98,9 @@ class MainActivity : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             /* Showing the ProgressBar, Making the main design GONE */
-            findViewById<ProgressBar>(R.id.loader).visibility = View.VISIBLE
+//            findViewById<ProgressBar>(R.id.loader).visibility = View.VISIBLE
             findViewById<LinearLayout>(R.id.weatherLayout).visibility = View.GONE
-            findViewById<TextView>(R.id.errorText).visibility = View.GONE
+//            findViewById<TextView>(R.id.errorText).visibility = View.GONE
         }
 
         override fun doInBackground(vararg params: String?): String? {
@@ -133,13 +133,13 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.status).text = weatherDescription.capitalize()
                 findViewById<TextView>(R.id.temp).text = temp
 
-                /* Views populated, Hiding the loader, Showing the main design */
-                findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
+//                /* Views populated, Hiding the loader, Showing the main design */
+//                findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
                 findViewById<LinearLayout>(R.id.weatherLayout).visibility = View.VISIBLE
 
             } catch (e: Exception) {
-                findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
-                findViewById<TextView>(R.id.errorText).visibility = View.VISIBLE
+//                findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
+//                findViewById<TextView>(R.id.errorText).visibility = View.VISIBLE
             }
 
         }
