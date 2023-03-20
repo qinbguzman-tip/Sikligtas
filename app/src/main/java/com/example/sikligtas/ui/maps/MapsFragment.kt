@@ -122,16 +122,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
 
-        binding.alertButton.setOnClickListener {
-            mediaPlayer.start()
-
-            Alerter.create(requireActivity())
-                .setTitle("Hazard Alert")
-                .setText("In 300m, there is an approaching vehicle on your right")
-                .setBackgroundColorRes(R.color.md_theme_light_error)
-                .setIcon(R.drawable.ic_left_arrow)
-                .show()
-        }
+//        binding.alertButton.setOnClickListener {
+//            mediaPlayer.start()
+//
+//            Alerter.create(requireActivity())
+//                .setTitle("Hazard Alert")
+//                .setText("In 300m, there is an approaching vehicle on your right")
+//                .setBackgroundColorRes(R.color.md_theme_light_error)
+//                .setIcon(R.drawable.ic_left_arrow)
+//                .show()
+//        }
 
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
@@ -291,7 +291,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startButton.disable()
             binding.startButton.hide()
             binding.stopButton.show()
-            binding.alertButton.show()
+//            binding.alertButton.show()
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -301,7 +301,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         binding.stopButton.hide()
         binding.startButton.show()
-        binding.alertButton.hide()
+//        binding.alertButton.hide()
     }
 
     private fun onResetButtonClicked() {
@@ -398,10 +398,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     @SuppressLint("MissingPermission")
     private fun mapReset() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
-//            val lastKnownLocation = LatLng(
-//                it.result.latitude,
-//                it.result.latitude
-//            )
             for (polyline in polylineList) {
                 polyline.remove()
             }

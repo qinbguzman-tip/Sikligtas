@@ -22,7 +22,7 @@
         <action
             android:id="@+id/action_mapsFragment_to_resultFragment"
             app:destination="@id/resultFragment"
-            app:popUpTo="@id/mapsFragment"
+            app:popUpTo="@id/resultFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_mapsFragment_to_homeFragment"
@@ -34,7 +34,9 @@
         tools:layout="@layout/fragment_result">
         <action
             android:id="@+id/action_resultFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
+            app:destination="@id/mapsFragment"
+            app:popUpTo="@id/mapsFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="result"
             app:argType="com.example.sikligtas.model.Result" />
