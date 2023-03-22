@@ -27,6 +27,12 @@
         <action
             android:id="@+id/action_mapsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <dialog
         android:id="@+id/resultFragment"
@@ -44,6 +50,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.sikligtas.ui.home.HomeFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_mapsFragment"
@@ -66,19 +73,25 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.sikligtas.ui.history.HistoryFragment"
-        android:label="fragment_history"
-        tools:layout="@layout/fragment_history" >
+        android:label="History"
+        tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.sikligtas.ui.profile.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
 </navigation>

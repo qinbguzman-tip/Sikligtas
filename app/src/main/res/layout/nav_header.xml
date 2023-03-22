@@ -28,7 +28,6 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:letterSpacing="0.2"
-        android:fontFamily="@font/manrope_extrabold"
         android:layout_gravity="center"/>
     <TextView
         android:layout_width="wrap_content"
@@ -37,7 +36,6 @@
         android:textColor="@color/black"
         android:textSize="11sp"
         android:textAllCaps="true"
-        android:fontFamily="@font/manrope"
         android:layout_gravity="center"/>
 
 </LinearLayout>

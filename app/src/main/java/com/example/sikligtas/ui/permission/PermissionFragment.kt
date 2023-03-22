@@ -22,6 +22,7 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,8 +33,10 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
         drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
+        toolbar = requireActivity().findViewById(R.id.myToolbar)
 
         bottomNavigationView.visibility = View.GONE
+        toolbar.visibility = View.GONE
 
         binding.continueButton.setOnClickListener {
             if (hasLocationPermission(requireContext())) {
@@ -70,6 +73,7 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
+        toolbar.visibility = View.VISIBLE
         _binding = null
     }
 
