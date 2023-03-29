@@ -28,14 +28,6 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout = binding.drawerLayout
         navController = findNavController(R.id.navHostFragment)
 
-//        toolbar = findViewById(R.id.myToolbar)
-
-//        actionBarToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
-//        drawerLayout.addDrawerListener(actionBarToggle)
-//        actionBarToggle.syncState()
-//
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.homeFragment,

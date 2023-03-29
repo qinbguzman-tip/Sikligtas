@@ -80,7 +80,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var mediaPlayer: MediaPlayer
+//    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,18 +120,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
-
-//        binding.alertButton.setOnClickListener {
-//            mediaPlayer.start()
-//
-//            Alerter.create(requireActivity())
-//                .setTitle("Hazard Alert")
-//                .setText("In 300m, there is an approaching vehicle on your right")
-//                .setBackgroundColorRes(R.color.md_theme_light_error)
-//                .setIcon(R.drawable.ic_left_arrow)
-//                .show()
-//        }
+//        mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
+////
+//////        binding.alertButton.setOnClickListener {
+//////            mediaPlayer.start()
+//////
+//////            Alerter.create(requireActivity())
+//////                .setTitle("Hazard Alert")
+//////                .setText("In 300m, there is an approaching vehicle on your right")
+//////                .setBackgroundColorRes(R.color.md_theme_light_error)
+//////                .setIcon(R.drawable.ic_left_arrow)
+//////                .show()
+//////        }
 
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
@@ -181,6 +181,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         val currentLatLng = LatLng(location.latitude, location.longitude)
+//                        val markerOptions = MarkerOptions()
+//                            .position(currentLatLng)
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
                     }
                 }
@@ -398,18 +400,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     @SuppressLint("MissingPermission")
     private fun mapReset() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
+            val lastKnownLocation = LatLng(
+                it.result.latitude,
+                it.result.longitude
+            )
+            map.animateCamera(
+                CameraUpdateFactory.newCameraPosition(
+                    setCameraPosition(lastKnownLocation)
+                )
+            )
             for (polyline in polylineList) {
                 polyline.remove()
             }
-            map.animateCamera(
-                CameraUpdateFactory.newCameraPosition(
-                    setCameraPosition(locationList.last())
-                )
-            )
-            locationList.clear()
             for (marker in markerList) {
                 marker.remove()
             }
+            locationList.clear()
+            markerList.clear()
             binding.resetButton.hide()
             binding.startButton.show()
         }
@@ -443,13 +450,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
+        mapReset()
         _binding = null
     }
 
-    override fun onDestroy() {
-        mediaPlayer.release()
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+////        mediaPlayer.release()
+//        super.onDestroy()
+//    }
 
     override fun onMarkerClick(p0: Marker): Boolean {
         return true

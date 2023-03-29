@@ -33,7 +33,7 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
         drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
-        toolbar = requireActivity().findViewById(R.id.myToolbar)
+        toolbar = requireActivity().findViewById(R.id.navToolbar)
 
         bottomNavigationView.visibility = View.GONE
         toolbar.visibility = View.GONE

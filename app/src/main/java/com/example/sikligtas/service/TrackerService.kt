@@ -119,6 +119,7 @@ class TrackerService : LifecycleService() {
             Looper.getMainLooper()
         )
         startTime.postValue(System.currentTimeMillis())
+
     }
 
     private fun stopForegroundService() {
