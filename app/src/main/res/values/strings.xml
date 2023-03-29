@@ -9,7 +9,7 @@
     <string name="start">Start</string>
     <string name="tap_on_my_location_button">Tap on my Location Button</string>
     <string name="distance">Distance</string>
-    <string name="time">Time</string>
+    <string name="time">Duration</string>
     <string name="result">%1$s km</string>
     <string name="forgotPassword"><u>Forgot your Password?</u></string>
     <string name="sign_up">Don\'t have an account? <u>Sign Up</u></string>

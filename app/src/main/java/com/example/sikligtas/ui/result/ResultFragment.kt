@@ -1,13 +1,16 @@
 package com.example.sikligtas.ui.result
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.navArgs
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.FragmentResultBinding
+import com.example.sikligtas.ui.maps.MapsFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class ResultFragment : BottomSheetDialogFragment() {
@@ -34,4 +37,5 @@ class ResultFragment : BottomSheetDialogFragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

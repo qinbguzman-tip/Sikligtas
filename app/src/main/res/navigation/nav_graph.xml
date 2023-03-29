@@ -12,7 +12,7 @@
         <action
             android:id="@+id/action_permissionFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
+            app:popUpTo="@id/permissionFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -22,26 +22,34 @@
         <action
             android:id="@+id/action_mapsFragment_to_resultFragment"
             app:destination="@id/resultFragment"
-            app:popUpTo="@id/mapsFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_mapsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <dialog
         android:id="@+id/resultFragment"
         android:name="com.example.sikligtas.ui.result.ResultFragment"
         tools:layout="@layout/fragment_result">
-        <action
-            android:id="@+id/action_resultFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
         <argument
             android:name="result"
             app:argType="com.example.sikligtas.model.Result" />
+        <action
+            android:id="@+id/action_resultFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment"
+            app:popUpTo="@id/mapsFragment"
+            app:popUpToInclusive="true" />
     </dialog>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.sikligtas.ui.home.HomeFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_mapsFragment"
@@ -64,19 +72,29 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.sikligtas.ui.history.HistoryFragment"
-        android:label="fragment_history"
-        tools:layout="@layout/fragment_history" >
+        android:label="History"
+        tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_historyFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.sikligtas.ui.profile.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_profileFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
 </navigation>

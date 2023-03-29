@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <LinearLayout
             android:id="@+id/greetlbl"
@@ -26,7 +25,6 @@
                 android:id="@+id/textgreet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_bold"
                 android:text="Hello,"
                 android:textColor="@color/black"
                 android:textSize="25sp" />
@@ -36,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/manrope_bold"
                 android:text="User"
                 android:textColor="@color/md_theme_light_primary"
                 android:textSize="25sp" />
@@ -45,7 +42,6 @@
                 android:id="@+id/exclamation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_bold"
                 android:text="!"
                 android:textColor="@color/black"
                 android:textSize="25sp" />
@@ -84,7 +80,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/manrope_bold"
                     android:text="25°C"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -95,7 +90,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/manrope_semibold"
                     android:text="Partly Cloudy"
                     android:textColor="@color/white"
                     android:textSize="12sp"
@@ -137,7 +131,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:fontFamily="@font/manrope_semibold"
                     android:text="Marikina Heights"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -168,7 +161,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="5dp"
-                    android:fontFamily="@font/manrope_extrabold"
                     android:letterSpacing="0.1"
                     android:text="It's a great day to cycle!"
                     android:textAlignment="textEnd"
@@ -182,7 +174,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/manrope"
                     android:letterSpacing="0.1"
                     android:text="Be Safe, Ride Safe"
                     android:textAllCaps="true"
@@ -196,7 +187,6 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="20dp"
-                    android:fontFamily="@font/manrope"
                     android:letterSpacing="0.5"
                     android:text="Sikligtas"
                     android:textAllCaps="true"
@@ -231,7 +221,6 @@
                     android:id="@+id/travellbl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_semibold"
                     android:text="Last Travel"
                     android:textAlignment="textEnd"
                     android:textAllCaps="true"
@@ -261,7 +250,6 @@
                     android:layout_height="wrap_content"
                     android:text="Anonas, Quezon City"
                     android:textAlignment="textEnd"
-                    android:fontFamily="@font/manrope_extrabold"
                     android:textSize="15sp"
                     android:letterSpacing="0.05"
                     android:textColor="@color/md_theme_light_primary"/>
@@ -273,7 +261,6 @@
                     android:text="Last Location"
                     android:textAllCaps="true"
                     android:textAlignment="center"
-                    android:fontFamily="@font/manrope_bold"
                     android:letterSpacing="0.05"
                     android:textSize="10sp"
                     android:textColor="@color/md_theme_light_secondary"/>
@@ -299,7 +286,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="5"
-                        android:fontFamily="@font/manrope_extrabold"
                         android:textSize="20sp"
                         android:letterSpacing="0.05"
                         android:textColor="@color/md_theme_light_primary"/>
@@ -309,7 +295,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="km"
-                        android:fontFamily="@font/manrope_extrabold"
                         android:textSize="13sp"
                         android:letterSpacing="0.05"
                         android:textColor="@color/md_theme_light_secondary"/>
@@ -323,7 +308,6 @@
                     android:text="Distance"
                     android:textAllCaps="true"
                     android:textAlignment="center"
-                    android:fontFamily="@font/manrope_bold"
                     android:letterSpacing="0.05"
                     android:textSize="10sp"
                     android:textColor="@color/md_theme_light_secondary"/>
@@ -350,7 +334,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="30"
-                        android:fontFamily="@font/manrope_bold"
                         android:textSize="20sp"
                         android:letterSpacing="0.05"
                         android:textColor="@color/md_theme_light_primary"/>
@@ -360,7 +343,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="m"
-                        android:fontFamily="@font/manrope_bold"
                         android:textSize="13sp"
                         android:letterSpacing="0.05"
                         android:textColor="@color/md_theme_light_secondary"/>
@@ -374,7 +356,6 @@
                     android:text="Duration"
                     android:textAllCaps="true"
                     android:textAlignment="center"
-                    android:fontFamily="@font/manrope_bold"
                     android:letterSpacing="0.05"
                     android:textSize="10sp"
                     android:textColor="@color/md_theme_light_secondary"/>
@@ -404,7 +385,6 @@
                 android:layout_margin="20dp"
                 android:padding="10dp"
                 android:layout_gravity="center|top"
-                android:fontFamily="@font/manrope_extrabold"
                 android:textSize="16sp"
                 android:letterSpacing="0.05"
                 android:textColor="@color/md_theme_light_primary"/>

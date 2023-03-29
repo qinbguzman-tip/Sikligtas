@@ -7,7 +7,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.sikligtas.ui.MainActivity
 import com.example.sikligtas.R
-import com.example.sikligtas.util.Constants.ACTION_NAVIGATE_TO_MAPS_FRAGMENT
 import com.example.sikligtas.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.sikligtas.util.Constants.PENDING_INTENT_REQUEST_CODE
 import dagger.Module
