@@ -19,4 +19,12 @@ object Constants {
 
     const val LOCATION_UPDATE_INTERVAL = 4000L
     const val LOCATION_FASTEST_UPDATE_INTERVAL = 2000L
+
+    val HAZARD_INFO = mutableMapOf(
+        "right" to 60,
+        "left" to 65,
+        "behind" to 45,
+        "right" to 57,
+        "left" to 45
+    )
 }

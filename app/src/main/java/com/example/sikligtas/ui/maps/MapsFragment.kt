@@ -7,18 +7,22 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.location.Location
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -33,6 +37,7 @@ import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_START
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_STOP
+import com.example.sikligtas.util.Constants.HAZARD_INFO
 import com.example.sikligtas.util.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.sikligtas.util.Constants.REQUEST_CHECK_SETTINGS
 import com.example.sikligtas.util.ExtensionFunctions.disable
@@ -58,7 +63,6 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import java.util.*
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
@@ -83,8 +87,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
-    private lateinit var tts : TextToSpeech
+    private lateinit var tts: TextToSpeech
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,11 +99,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.tracking = this
-
-        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
-        drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
-
-        bottomNavigationView.visibility = View.GONE
 
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
@@ -120,6 +120,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
+        drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
+        toolbar = requireActivity().findViewById(R.id.navToolbar)
+
+        bottomNavigationView.visibility = View.GONE
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -189,6 +196,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.isMyLocationEnabled = true
+        map.uiSettings.isCompassEnabled = true
+
         map.setOnMyLocationButtonClickListener(this)
         map.setOnMarkerClickListener(this)
         lifecycleScope.launch {
@@ -303,13 +312,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startButton.hide()
             binding.stopButton.show()
 
-            val data = "There is an approaching vehicle to your right"
-
-            Handler().postDelayed({
-                audioNotification(data)
-                visualNotification(data)
-            }, 20000)
-
+            alertHazard()
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -359,23 +362,41 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         timer.start()
     }
 
-    private fun audioNotification(data: String) {
-        tts = TextToSpeech(requireContext()) { status ->
-            if(status != TextToSpeech.ERROR) {
-                tts.language = Locale.US
-                tts.setSpeechRate(1.0f)
-                tts.speak(data, TextToSpeech.QUEUE_FLUSH, null, null)
-            }
-        }
-    }
+    private fun alertHazard() {
+        val tts = TextToSpeech(requireContext(), null, null)
 
-    private fun visualNotification(data: String) {
-        Alerter.create(requireActivity())
-            .setTitle("Hazard Alert")
-            .setText(data)
-            .setBackgroundColorRes(R.color.md_theme_light_error)
-            .setIcon(R.drawable.ic_left_arrow)
-            .show()
+        Handler().postDelayed({
+            Thread {
+                for ((key, value) in HAZARD_INFO) {
+                    tts.speak(
+                        getString(R.string.hazard_info, value.toString(), key),
+                        TextToSpeech.QUEUE_FLUSH,
+                        null,
+                        null
+                    )
+                    tts.setSpeechRate(1.0f)
+                    val vAlert = Alerter.create(requireActivity())
+                        .setTitle("Hazard Alert")
+                        .setText(getString(R.string.hazard_info, value.toString(), key))
+                        .setBackgroundColorRes(R.color.md_theme_light_error)
+                        .setDuration(4000)
+                        .show()
+                    when (key) {
+                        "left" -> {
+                            vAlert?.setIcon(R.drawable.ic_left_arrow)
+                        }
+                        "right" -> {
+                            vAlert?.setIcon(R.drawable.ic_right_arrow)
+                        }
+                        else -> {
+                            vAlert?.setIcon(R.drawable.ic_behind_arrow)
+                        }
+                    }
+                    Thread.sleep(10000)
+                }
+                tts.shutdown()
+            }.start()
+        }, 10000)
     }
 
     private fun stopForegroundService() {
@@ -485,7 +506,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
-        mapReset()
+        (activity as AppCompatActivity).supportActionBar?.show()
         _binding = null
     }
 
@@ -499,3 +520,4 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
 }
+
