@@ -7,11 +7,13 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.media.MediaPlayer
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +28,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.FragmentMapsBinding
 import com.example.sikligtas.service.TrackerService
-import com.example.sikligtas.ui.home.HomeFragment
 import com.example.sikligtas.ui.maps.MapUtil.calculateElapsedTime
 import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
@@ -48,7 +49,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
-import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -58,6 +58,8 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
+import java.util.*
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     OnMarkerClickListener,
@@ -65,6 +67,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
+//    private var userLocationMarker: Marker? = null
 
     private lateinit var map: GoogleMap
 
@@ -80,7 +83,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
-//    private lateinit var mediaPlayer: MediaPlayer
+
+    private lateinit var tts : TextToSpeech
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,19 +124,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
 
-//        mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alert_sound)
-////
-//////        binding.alertButton.setOnClickListener {
-//////            mediaPlayer.start()
-//////
-//////            Alerter.create(requireActivity())
-//////                .setTitle("Hazard Alert")
-//////                .setText("In 300m, there is an approaching vehicle on your right")
-//////                .setBackgroundColorRes(R.color.md_theme_light_error)
-//////                .setIcon(R.drawable.ic_left_arrow)
-//////                .show()
-//////        }
-
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -148,7 +139,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                         if (location != null) {
                             val currentLatLng = LatLng(location.latitude, location.longitude)
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
                         }
                     }
                 }
@@ -181,8 +172,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         val currentLatLng = LatLng(location.latitude, location.longitude)
-//                        val markerOptions = MarkerOptions()
-//                            .position(currentLatLng)
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
                     }
                 }
@@ -213,6 +202,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             isCompassEnabled = true
             isScrollGesturesEnabled = false
         }
+
         setMapStyle(map)
         observeTrackerService()
     }
@@ -232,6 +222,25 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             Log.d("MapStyle", e.toString())
         }
     }
+
+// Custom Marker --------------------------------------------------
+//    private fun setUserLocationMarker(location: Location) {
+//        val latLng = LatLng(location.latitude, location.longitude)
+//
+//        if(userLocationMarker ==  null) {
+//            val markerOptions = MarkerOptions()
+//                .position(latLng)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.paperplane))
+//                .rotation(location.bearing)
+//                .anchor(0.5f, 0.5f)
+//            userLocationMarker = map.addMarker(markerOptions)
+//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+//        } else {
+//            userLocationMarker?.position = latLng
+//            userLocationMarker?.rotation = location.bearing
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+//        }
+//    }
 
     private fun observeTrackerService() {
         TrackerService.locationList.observe(viewLifecycleOwner) {
@@ -293,7 +302,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startButton.disable()
             binding.startButton.hide()
             binding.stopButton.show()
-//            binding.alertButton.show()
+
+            val data = "There is an approaching vehicle to your right"
+
+            Handler().postDelayed({
+                audioNotification(data)
+                visualNotification(data)
+            }, 20000)
+
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -341,6 +357,25 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
         }
         timer.start()
+    }
+
+    private fun audioNotification(data: String) {
+        tts = TextToSpeech(requireContext()) { status ->
+            if(status != TextToSpeech.ERROR) {
+                tts.language = Locale.US
+                tts.setSpeechRate(1.0f)
+                tts.speak(data, TextToSpeech.QUEUE_FLUSH, null, null)
+            }
+        }
+    }
+
+    private fun visualNotification(data: String) {
+        Alerter.create(requireActivity())
+            .setTitle("Hazard Alert")
+            .setText(data)
+            .setBackgroundColorRes(R.color.md_theme_light_error)
+            .setIcon(R.drawable.ic_left_arrow)
+            .show()
     }
 
     private fun stopForegroundService() {
@@ -454,10 +489,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         _binding = null
     }
 
-//    override fun onDestroy() {
-////        mediaPlayer.release()
-//        super.onDestroy()
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.shutdown()
+    }
 
     override fun onMarkerClick(p0: Marker): Boolean {
         return true
