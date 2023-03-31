@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
 
     private fun fetchWeatherData() = lifecycleScope.launch {
         val city = "Manila, phl" // Set the desired city here
-        val weatherAPI = R.string.weather_api_key // Replace with your OpenWeatherMap API key
+        val weatherAPI = resources.getString(R.string.weather_api_key) // Replace with your OpenWeatherMap API key
 
         /* Showing the ProgressBar, Making the main design GONE */
         binding.weatherLayout.visibility = View.GONE
