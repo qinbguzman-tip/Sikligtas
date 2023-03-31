@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.sikligtas.R
 import com.example.sikligtas.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ class HomeFragment : Fragment() {
 
     private fun fetchWeatherData() = lifecycleScope.launch {
         val city = "Manila, phl" // Set the desired city here
-        val weatherAPI = "6e15e38580b41e39d9b85ee972e63c49" // Replace with your OpenWeatherMap API key
+        val weatherAPI = R.string.weather_api_key // Replace with your OpenWeatherMap API key
 
         /* Showing the ProgressBar, Making the main design GONE */
         binding.weatherLayout.visibility = View.GONE
