@@ -122,11 +122,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
-        drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
-        toolbar = requireActivity().findViewById(R.id.navToolbar)
+//        toolbar = requireActivity().findViewById(R.id.navToolbar)
 
         bottomNavigationView.visibility = View.GONE
-        (activity as AppCompatActivity).supportActionBar?.hide()
+//        (activity as AppCompatActivity).supportActionBar?.hide()
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -232,25 +231,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-// Custom Marker --------------------------------------------------
-//    private fun setUserLocationMarker(location: Location) {
-//        val latLng = LatLng(location.latitude, location.longitude)
-//
-//        if(userLocationMarker ==  null) {
-//            val markerOptions = MarkerOptions()
-//                .position(latLng)
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.paperplane))
-//                .rotation(location.bearing)
-//                .anchor(0.5f, 0.5f)
-//            userLocationMarker = map.addMarker(markerOptions)
-//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
-//        } else {
-//            userLocationMarker?.position = latLng
-//            userLocationMarker?.rotation = location.bearing
-//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
-//        }
-//    }
-
     private fun observeTrackerService() {
         TrackerService.locationList.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -322,7 +302,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         binding.stopButton.hide()
         binding.startButton.show()
-//        binding.alertButton.hide()
     }
 
     private fun onResetButtonClicked() {
@@ -473,6 +452,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
             locationList.clear()
             markerList.clear()
+            TrackerService.stopTime.value = 0L
+            TrackerService.startTime.value = 0L
+
             binding.resetButton.hide()
             binding.startButton.show()
         }
@@ -506,13 +488,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
-        (activity as AppCompatActivity).supportActionBar?.show()
+//        (activity as AppCompatActivity).supportActionBar?.show()
         _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tts.shutdown()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {

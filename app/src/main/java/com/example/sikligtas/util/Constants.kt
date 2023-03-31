@@ -24,7 +24,5 @@ object Constants {
         "right" to 60,
         "left" to 65,
         "behind" to 45,
-        "right" to 57,
-        "left" to 45
     )
 }
