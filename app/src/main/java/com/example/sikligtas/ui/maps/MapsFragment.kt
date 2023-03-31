@@ -86,7 +86,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     private lateinit var tts: TextToSpeech
@@ -342,7 +341,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun alertHazard() {
-        val tts = TextToSpeech(requireContext(), null, null)
+        tts = TextToSpeech(requireContext(), null, null)
 
         Handler().postDelayed({
             Thread {
