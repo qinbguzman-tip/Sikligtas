@@ -97,4 +97,8 @@ dependencies {
 
     // Firebase
     implementation 'com.google.firebase:firebase-auth:21.2.0'
+
+    // Weather API
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 }

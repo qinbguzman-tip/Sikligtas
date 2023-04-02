@@ -16,7 +16,7 @@
     <string name="login">Already have an account? <u>Login</u></string>
     <string name="hazard_info">In %s meters, there is an approaching vehicle coming from your %s.</string>
 
-<!--    API KEYS     -->
+    <!--    API KEYS     -->
     <string name="google_maps_key" translatable="false">AIzaSyCtlOWS5y1fbO7c9GhcYGCim_QMLxlV3Ys</string>
     <string name="weather_api_key" translatable="false">6e15e38580b41e39d9b85ee972e63c49</string>
 </resources>
