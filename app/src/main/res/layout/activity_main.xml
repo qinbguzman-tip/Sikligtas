@@ -26,11 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/bottomNav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/navToolbar"
-            app:navGraph="@navigation/nav_graph" />
+            app:layout_constraintTop_toBottomOf="@+id/navToolbar"
+            app:layout_constraintBottom_toBottomOf="@+id/bottomNav"
+            app:navGraph="@navigation/nav_graph"
+            tools:layout_editor_absoluteY="64dp" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNav"
@@ -39,7 +40,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/gradient_start"
             app:menu="@menu/bottom_nav_menu" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

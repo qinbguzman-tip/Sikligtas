@@ -6,7 +6,12 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
+<!-- Background-->
+    <color name="gradient_start">#FFFFFF</color>
+    <color name="gradient_end">#D3E8D3</color>
     <color name="fragmentBackground">#D2F3E2</color>
+
+<!--    Palette-->
     <color name="seed">#05E177</color>
     <color name="outline">#00a656</color>
     <color name="md_theme_light_card_primary">#00803F</color>

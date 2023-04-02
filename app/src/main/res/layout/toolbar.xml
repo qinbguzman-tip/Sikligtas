@@ -4,7 +4,6 @@
     android:id="@+id/myToolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/md_theme_light_card_secondary"
     android:elevation="4dp"
     android:theme="@style/Theme.Sikligtas">
 

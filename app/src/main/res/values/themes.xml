@@ -14,6 +14,10 @@
 <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
 <!--    </style>-->
 
+    <style name="AppTheme.Gradient" parent="Theme.Sikligtas">
+        <item name="android:windowBackground">@drawable/gradient_background</item>
+    </style>
+
     <style name="Theme.Sikligtas" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
