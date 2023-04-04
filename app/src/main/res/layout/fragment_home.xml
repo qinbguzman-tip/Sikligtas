@@ -1,438 +1,448 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/greetlbl"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textgreet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello,"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="User"
-                android:textColor="@color/md_theme_light_primary"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="!"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/weatherCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:cardBackgroundColor="@color/md_theme_light_card_primary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/greetlbl">
+            android:layout_height="match_parent"
+            android:padding="15dp">
 
             <LinearLayout
-                android:id="@+id/weatherLayout"
-                android:layout_width="wrap_content"
+                android:id="@+id/greetlbl"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_gravity="center_vertical|start"
-                android:layout_marginStart="30dp"
-                android:orientation="vertical">
-                <ImageView
-                    android:id="@+id/weatherIC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/partly_cloudy" />
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/temp"
+                    android:id="@+id/textgreet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="25°C"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    app:layout_constraintTop_toBottomOf="parent" />
+                    android:text="Hello,"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Partly Cloudy"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    app:layout_constraintTop_toTopOf="@+id/temp" />
-
-                <ProgressBar
-                    android:id="@+id/loader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/errorText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Something went wrong"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"></androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/locationLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="..."
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="13sp" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="3dp"
-                    app:srcCompat="@drawable/location_pin" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/quoteLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="150dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="30dp"
-                android:layout_gravity="end"
-                android:orientation="vertical">
+                    android:text="User"
+                    android:textColor="@color/md_theme_light_primary"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/quote"
+                    android:id="@+id/exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="!"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/weatherCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/md_theme_light_card_primary"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/greetlbl">
+
+                <LinearLayout
+                    android:id="@+id/weatherLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/weatherIC"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/partly_cloudy" />
+
+                    <TextView
+                        android:id="@+id/temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="25°C"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintTop_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Partly Cloudy"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintTop_toTopOf="@+id/temp" />
+
+                    <ProgressBar
+                        android:id="@+id/loader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/errorText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="Something went wrong"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"></androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/locationLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginTop="5dp"
-                    android:letterSpacing="0.1"
-                    android:text="It's a great day to cycle!"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tagline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:letterSpacing="0.1"
-                    android:text="Be Safe, Ride Safe"
-                    android:textAllCaps="true"
-                    android:textColor="@color/md_theme_light_secondaryContainer"
-                    android:textSize="10sp" />
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="..."
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/sikligtastxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="20dp"
-                    android:letterSpacing="0.5"
-                    android:text="Sikligtas"
-                    android:textAllCaps="true"
-                    android:textColor="@color/md_theme_light_secondaryContainer"
-                    android:textSize="8sp" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/travelCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@color/md_theme_light_card_secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherCard">
-
-
-            <LinearLayout
-                android:id="@+id/last_travelLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp">
-
-                <TextView
-                    android:id="@+id/travellbl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last Travel"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.05"
-                    android:textColor="@color/md_theme_light_secondary"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/start_end_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/start_end_icon" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@id/content"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/curr_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Anonas, Quezon City"
-                    android:textAlignment="textEnd"
-                    android:textSize="15sp"
-                    android:letterSpacing="0.05"
-                    android:textColor="@color/md_theme_light_primary"/>
-
-                <TextView
-                    android:id="@+id/locationlbl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Last Location"
-                    android:textAllCaps="true"
-                    android:textAlignment="center"
-                    android:letterSpacing="0.05"
-                    android:textSize="10sp"
-                    android:textColor="@color/md_theme_light_secondary"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/distanceLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="end"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="30dp">
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="3dp"
+                        app:srcCompat="@drawable/location_pin" />
+                </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/quoteLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="end">
+                    android:layout_gravity="end"
+                    android:layout_marginStart="150dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="30dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/distance"
-                        android:layout_width="match_parent"
+                        android:id="@+id/quote"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5"
-                        android:textSize="20sp"
-                        android:letterSpacing="0.05"
-                        android:textColor="@color/md_theme_light_primary"/>
+                        android:layout_gravity="end"
+                        android:layout_marginTop="5dp"
+                        android:letterSpacing="0.1"
+                        android:text="It's a great day to cycle!"
+                        android:textAlignment="textEnd"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/unit"
-                        android:layout_width="match_parent"
+                        android:id="@+id/tagline"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="km"
-                        android:textSize="13sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:letterSpacing="0.1"
+                        android:text="Be Safe, Ride Safe"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondaryContainer"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/sikligtastxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="20dp"
+                        android:letterSpacing="0.5"
+                        android:text="Sikligtas"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondaryContainer"
+                        android:textSize="8sp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/travelCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/md_theme_light_card_secondary"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/weatherCard">
+
+                <LinearLayout
+                    android:id="@+id/last_travelLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/travellbl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:letterSpacing="0.05"
-                        android:textColor="@color/md_theme_light_secondary"/>
+                        android:text="Last Travel"
+                        android:textAlignment="textEnd"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondary"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/start_end_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:srcCompat="@drawable/start_end_icon" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/curr_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.05"
+                        android:maxWidth="100dp"
+                        android:text="Anonas, Quezon City"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/md_theme_light_primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/locationlbl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:letterSpacing="0.05"
+                        android:text="Last Location"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/distanceLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/distance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.05"
+                            android:text="5"
+                            android:textColor="@color/md_theme_light_primary"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/unit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.05"
+                            android:text="km"
+                            android:textColor="@color/md_theme_light_secondary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/distancelbl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.05"
+                        android:text="Distance"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondary"
+                        android:textSize="10sp" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/distancelbl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Distance"
-                    android:textAllCaps="true"
-                    android:textAlignment="center"
-                    android:letterSpacing="0.05"
-                    android:textSize="10sp"
-                    android:textColor="@color/md_theme_light_secondary"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/durationLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="end|bottom"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="15dp">
-
                 <LinearLayout
+                    android:id="@+id/durationLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="end">
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/duration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.05"
+                            android:text="30"
+                            android:textColor="@color/md_theme_light_primary"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/time_unit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.05"
+                            android:text="m"
+                            android:textColor="@color/md_theme_light_secondary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/duration"
-                        android:layout_width="match_parent"
+                        android:id="@+id/durationlbl"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30"
-                        android:textSize="20sp"
                         android:letterSpacing="0.05"
-                        android:textColor="@color/md_theme_light_primary"/>
-
-                    <TextView
-                        android:id="@+id/time_unit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="m"
-                        android:textSize="13sp"
-                        android:letterSpacing="0.05"
-                        android:textColor="@color/md_theme_light_secondary"/>
+                        android:text="Duration"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_theme_light_secondary"
+                        android:textSize="10sp" />
 
                 </LinearLayout>
 
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/connectivityCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/travelCard">
+
                 <TextView
-                    android:id="@+id/durationlbl"
+                    android:id="@+id/connectivitylbl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Duration"
-                    android:textAllCaps="true"
-                    android:textAlignment="center"
-                    android:letterSpacing="0.05"
-                    android:textSize="10sp"
-                    android:textColor="@color/md_theme_light_secondary"/>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/connectivityCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/travelCard">
-
-            <TextView
-                android:id="@+id/connectivitylbl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Device Information"
-                android:layout_margin="20dp"
-                android:padding="10dp"
-                android:layout_gravity="center|top"
-                android:textSize="16sp"
-                android:letterSpacing="0.05"
-                android:textColor="@color/md_theme_light_primary"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_margin="25dp">
-
-                <ImageView
-                    android:id="@+id/connectivity_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
                     android:layout_margin="20dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    app:srcCompat="@drawable/not_connected_icon" />
+                    android:letterSpacing="0.05"
+                    android:padding="10dp"
+                    android:text="Device Information"
+                    android:textColor="@color/md_theme_light_primary"
+                    android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/blue_status"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No Device Connected"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:fontFamily="@font/manrope_extrabold"
-                    android:textAllCaps="true"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.05"
-                    android:textColor="@color/gray"/>
+                    android:layout_gravity="center"
+                    android:layout_margin="25dp"
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/blue_trigger"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tap to Connect"
-                    android:layout_marginTop="5dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:fontFamily="@font/manrope_extrabold"
-                    android:textAllCaps="true"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.05"
-                    android:textColor="@color/seed"/>
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/connectivity_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_margin="20dp"
+                        app:srcCompat="@drawable/not_connected_icon" />
 
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/blue_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:fontFamily="@font/manrope_extrabold"
+                        android:letterSpacing="0.05"
+                        android:text="No Device Connected"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gray"
+                        android:textSize="11sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/blue_trigger"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/manrope_extrabold"
+                        android:letterSpacing="0.05"
+                        android:text="Tap to Connect"
+                        android:textAllCaps="true"
+                        android:textColor="@color/seed"
+                        android:textSize="11sp" />
+                </LinearLayout>
 
+            </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</ScrollView>

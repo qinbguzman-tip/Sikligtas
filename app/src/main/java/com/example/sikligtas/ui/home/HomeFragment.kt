@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -20,6 +21,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,6 +89,24 @@ class HomeFragment : Fragment() {
                 Constants.LOCATION_PERMISSION_REQUEST_CODE
             )
         }
+
+
+        // Get the current user
+        val user = FirebaseAuth.getInstance().currentUser
+
+        // Access First Name
+        val displayName = user?.displayName
+        val firstNameParts = displayName?.split(" ")
+        val firstName = if (firstNameParts?.size ?: 0 >= 2) {
+            firstNameParts?.take(2)?.joinToString(" ")
+        } else {
+            firstNameParts?.getOrNull(0)
+        }
+
+
+        val displayNameTextView = view.findViewById<TextView>(R.id.userName)
+        displayNameTextView.text = firstName
+
     }
 
     private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {

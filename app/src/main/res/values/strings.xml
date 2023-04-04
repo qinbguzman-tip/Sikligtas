@@ -19,4 +19,19 @@
     <!--    API KEYS     -->
     <string name="google_maps_key" translatable="false">AIzaSyCtlOWS5y1fbO7c9GhcYGCim_QMLxlV3Ys</string>
     <string name="weather_api_key" translatable="false">6e15e38580b41e39d9b85ee972e63c49</string>
+    <string name="hello_there">Hello there,</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="type_your_email">Type your Email</string>
+    <string name="type_your_password">Type Your Password</string>
+    <string name="or">OR</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="let_s_get_started">Let\'s get started!</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up_txt">Sign Up</string>
+    <string name="sikligtas">sikligtas</string>
 </resources>

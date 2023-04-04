@@ -6,14 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".ui.SignInActivity">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:srcCompat="@drawable/logo_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="logo" />
+
+    <TextView
+        android:id="@+id/sikligtastxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/sikligtas"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/custom_card"
         android:maxHeight="100dp"
         android:orientation="vertical"
+        android:gravity="bottom"
+        app:layout_constraintTop_toBottomOf="@id/sikligtastxt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -23,12 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
-            android:fontFamily="@font/manrope_bold"
+            android:layout_marginTop="20dp"
             android:letterSpacing="0.1"
-            android:text="Hello there,"
+            android:text="@string/hello_there"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/welcomelbl"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,12 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/manrope_bold"
             android:gravity="start"
             android:letterSpacing="0.1"
-            android:text="Welcome back!"
+            android:text="@string/welcome_back"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/hellolbl" />
 
@@ -66,7 +93,7 @@
                 style="@style/LoginTextInputInnerFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type your Email"
+                android:hint="@string/type_your_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 app:layout_constraintWidth_max="488dp"
@@ -92,7 +119,7 @@
                 style="@style/LoginTextInputInnerFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type Your Password"
+                android:hint="@string/type_your_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 app:layout_constraintWidth_max="488dp"
@@ -106,21 +133,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/manrope_semibold"
             android:text="@string/forgotPassword"
-            android:textColor="@color/md_theme_light_outline"
+            android:textColor="#757575"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/passwordLayout" />
 
         <Button
             android:id="@+id/loginBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="15dp"
+            android:layout_gravity="center"
             android:backgroundTint="@color/md_theme_dark_onPrimary"
-            android:fontFamily="@font/manrope_semibold"
             android:text="Login"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -135,12 +161,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/manrope_semibold"
-            android:text="OR"
+            android:text="@string/or"
             android:textColor="@color/md_theme_light_outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
+
 
         <Button
             android:id="@+id/gSignInBtn"
@@ -148,13 +174,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:backgroundTint="@color/common_google_signin_btn_text_dark"
+            android:backgroundTint="@color/md_theme_dark_onPrimary"
             android:drawableLeft="@drawable/google"
-            android:fontFamily="@font/manrope_semibold"
+            android:minHeight="48dp"
             android:paddingHorizontal="30dp"
-            android:text="Sign in with Google"
+            android:text="@string/sign_in_with_google"
             android:textAllCaps="false"
-            android:textColor="@color/md_theme_light_outline"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -167,7 +193,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="50dp"
             android:text="@string/sign_up"
-            android:textColor="@color/md_theme_light_outline"
+            android:textColor="@color/gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
