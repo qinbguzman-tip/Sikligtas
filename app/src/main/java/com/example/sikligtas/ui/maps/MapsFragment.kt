@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,10 +26,11 @@ import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.sikligtas.JetsonNanoClient
+import com.example.sikligtas.OnDataReceivedListener
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.FragmentMapsBinding
 import com.example.sikligtas.service.TrackerService
@@ -37,7 +39,6 @@ import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_START
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_STOP
-import com.example.sikligtas.util.Constants.HAZARD_INFO
 import com.example.sikligtas.util.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.sikligtas.util.Constants.REQUEST_CHECK_SETTINGS
 import com.example.sikligtas.util.ExtensionFunctions.disable
@@ -67,12 +68,12 @@ import java.util.*
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     OnMarkerClickListener,
-    EasyPermissions.PermissionCallbacks {
+    EasyPermissions.PermissionCallbacks, OnDataReceivedListener {
 
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
-//    private var userLocationMarker: Marker? = null
 
+    private var borderLight: View? = null
     private lateinit var map: GoogleMap
 
     val started = MutableLiveData(false)
@@ -89,6 +90,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     private lateinit var tts: TextToSpeech
+    private lateinit var jnc: JetsonNanoClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,6 +105,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             onStartButtonClicked()
         }
         binding.stopButton.setOnClickListener {
+            jnc.close()
             onStopButtonClicked()
         }
         binding.resetButton.setOnClickListener {
@@ -119,6 +122,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        // Create a JetsonNanoClient instance and connect to Jetson Nano
+        jnc = JetsonNanoClient("192.168.254.146", 8080)
+        jnc.setOnDataReceivedListener(this)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
 //        toolbar = requireActivity().findViewById(R.id.navToolbar)
@@ -249,6 +256,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         TrackerService.stopTime.observe(viewLifecycleOwner) {
             stopTime = it
+
             if (stopTime != 0L) {
                 showPolylineFinalRoute()
                 displayResults()
@@ -290,8 +298,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             binding.startButton.disable()
             binding.startButton.hide()
             binding.stopButton.show()
-
-            alertHazard()
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -340,14 +346,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         timer.start()
     }
 
-    private fun alertHazard() {
-        tts = TextToSpeech(requireContext(), null, null)
+    override fun onDataReceived(data: String) {
+        val outputList: List<String> = data.split(",")
+        val distance = outputList[0]
+        val direction = outputList[1]
+        val hazard = outputList[2]
 
-        Handler().postDelayed({
-            Thread {
-                for ((key, value) in HAZARD_INFO) {
+        if (hazard == "true") {
+            // Call the alertHazard() function with the extracted parameters
+            alertHazard(direction, distance)
+        } else {
+            Log.d("Alert","Not Hazard")
+        }
+    }
+
+    private fun alertHazard(distance: String, direction: String) {
+        activity?.runOnUiThread {
+            tts = TextToSpeech(requireContext()) { status ->
+                if (status == TextToSpeech.SUCCESS) {
                     tts.speak(
-                        getString(R.string.hazard_info, value.toString(), key),
+                        getString(R.string.hazard_info, distance, direction),
                         TextToSpeech.QUEUE_FLUSH,
                         null,
                         null
@@ -355,27 +373,31 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     tts.setSpeechRate(1.0f)
                     val vAlert = Alerter.create(requireActivity())
                         .setTitle("Hazard Alert")
-                        .setText(getString(R.string.hazard_info, value.toString(), key))
+                        .setText(getString(R.string.hazard_info, distance, direction))
                         .setBackgroundColorRes(R.color.md_theme_light_error)
-                        .setDuration(4000)
+                        .setDuration(5000)
                         .show()
-                    when (key) {
-                        "left" -> {
+                    when (direction) {
+                        "Left" -> {
                             vAlert?.setIcon(R.drawable.ic_left_arrow)
                         }
-                        "right" -> {
+                        "Right" -> {
                             vAlert?.setIcon(R.drawable.ic_right_arrow)
                         }
-                        else -> {
+                        "Back" -> {
                             vAlert?.setIcon(R.drawable.ic_behind_arrow)
                         }
                     }
-                    Thread.sleep(10000)
+                    Thread.sleep(5000)
+                    tts.shutdown()
+                } else {
+                    Log.e("TTS", "TextToSpeech initialization failed")
                 }
-                tts.shutdown()
-            }.start()
-        }, 10000)
+            }
+        }
     }
+
+
 
     private fun stopForegroundService() {
         binding.startButton.disable()

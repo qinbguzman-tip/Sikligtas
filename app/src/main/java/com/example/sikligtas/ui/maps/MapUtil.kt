@@ -1,5 +1,11 @@
 package com.example.sikligtas.ui.maps
 
+import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.Resources
+import android.graphics.Outline
+import android.view.View
+import android.view.ViewOutlineProvider
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
