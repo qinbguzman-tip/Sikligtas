@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.sikligtas.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
         if (photoUrl != null) {
             Glide.with(this)
                 .load(photoUrl)
+                .apply(RequestOptions.circleCropTransform())
                 .into(photoImageView)
         } else {
             // Display a placeholder image if the user has no photo
