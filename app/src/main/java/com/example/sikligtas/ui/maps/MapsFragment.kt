@@ -286,6 +286,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
+            jnc = JetsonNanoClient("192.168.254.146", 8080)
             startCountDown()
             binding.startButton.disable()
             binding.startButton.hide()
@@ -297,6 +298,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStopButtonClicked() {
         stopForegroundService()
+        jnc.close()
+        tts.shutdown()
+        Alerter.hide()
         binding.stopButton.hide()
         binding.startButton.show()
     }
@@ -347,13 +351,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         while (dataBuffer.isNotEmpty()) {
             val data = dataBuffer.removeFirst()
             val outputList: List<String> = data.split(",")
-            val distance = outputList[0]
-            val direction = outputList[1]
+
+            val direction = outputList[0]
+
+            val meters = outputList[1].toInt() * 0.01
+            val distance = String.format("%.2f", meters).toDouble().toString()
+
             val hazard = outputList[2]
 
             if (hazard == "true") {
                 // Call the alertHazard() function with the extracted parameters
-                alertHazard(direction, distance)
+                alertHazard(distance, direction)
             } else {
                 Log.d("Alert","Not Hazard")
             }
@@ -399,18 +407,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     TextToSpeech.QUEUE_FLUSH,
                     params
                 )
-                tts.setSpeechRate(1.0f)
+                tts.setSpeechRate(1.5f)
             } else {
                 Log.e("TTS", "TextToSpeech initialization failed")
             }
         })
     }
 
-
-
     private fun stopForegroundService() {
         binding.startButton.disable()
-        jnc.close()
         sendActionCommandToService(ACTION_SERVICE_STOP)
     }
 
