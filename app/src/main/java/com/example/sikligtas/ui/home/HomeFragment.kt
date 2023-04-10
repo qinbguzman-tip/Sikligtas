@@ -1,9 +1,11 @@
 package com.example.sikligtas.ui.home
 
 import android.Manifest
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,6 +101,12 @@ class HomeFragment : Fragment() {
 
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
         displayNameTextView.text = firstName
+
+        val wifiSettingsTextView = view.findViewById<TextView>(R.id.wifi_connect)
+        wifiSettingsTextView.setOnClickListener {
+            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+            startActivity(intent)
+        }
 
     }
 
