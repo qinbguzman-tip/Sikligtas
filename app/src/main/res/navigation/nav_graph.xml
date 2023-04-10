@@ -18,6 +18,7 @@
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.example.sikligtas.ui.maps.MapsFragment"
+        android:label="Sikligtas"
         tools:layout="@layout/fragment_maps">
         <action
             android:id="@+id/action_mapsFragment_to_resultFragment"

@@ -418,15 +418,15 @@
                     android:padding="10dp">
 
                     <ImageView
-                        android:id="@+id/connectivity_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/bt_icon"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:layout_margin="20dp"
-                        app:srcCompat="@drawable/not_connected_icon" />
+                        app:srcCompat="@drawable/ic_bluetooth_off" />
 
                     <TextView
-                        android:id="@+id/blue_status"
+                        android:id="@+id/bt_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|center_horizontal"
@@ -438,7 +438,7 @@
                         android:textSize="11sp" />
 
                     <TextView
-                        android:id="@+id/blue_trigger"
+                        android:id="@+id/bt_connect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|center_horizontal"

@@ -3,7 +3,6 @@ package com.example.sikligtas.ui.home
 import android.Manifest
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,10 +21,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +33,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var geocoder: Geocoder
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
@@ -66,22 +60,22 @@ class HomeFragment : Fragment() {
 
             val settingsClient = LocationServices.getSettingsClient(requireActivity())
             settingsClient.checkLocationSettings(locationSettingsRequest).addOnSuccessListener {
-                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                        if (location != null) {
-                            fetchWeatherData(location.latitude, location.longitude)
-                        }
-                    }
-                }.addOnFailureListener { exception ->
-                    if (exception is ResolvableApiException) {
-                        try {
-                            exception.startResolutionForResult(
-                                requireActivity(), Constants.REQUEST_CHECK_SETTINGS
-                            )
-                        } catch (sendEx: IntentSender.SendIntentException) {
-                            // Ignore the error.
-                        }
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        fetchWeatherData(location.latitude, location.longitude)
                     }
                 }
+            }.addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    try {
+                        exception.startResolutionForResult(
+                            requireActivity(), Constants.REQUEST_CHECK_SETTINGS
+                        )
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error.
+                    }
+                }
+            }
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -103,7 +97,6 @@ class HomeFragment : Fragment() {
             firstNameParts?.getOrNull(0)
         }
 
-
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
         displayNameTextView.text = firstName
 
@@ -119,8 +112,8 @@ class HomeFragment : Fragment() {
         try {
             val response = withContext(Dispatchers.IO) {
                 URL("https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$weatherAPI").readText(
-                        Charsets.UTF_8
-                    )
+                    Charsets.UTF_8
+                )
             }
 
             /* Extracting JSON returns from the API */
