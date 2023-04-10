@@ -109,4 +109,8 @@ dependencies {
     // Onboard Screen
     implementation("com.tbuonomo:dotsindicator:4.3")
 
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+
 }

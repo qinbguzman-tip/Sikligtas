@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sikligtas.R
@@ -21,6 +22,7 @@ class HistoryFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HistoryFragmentAdapter
     private lateinit var database: FirebaseDatabase
+    private lateinit var historyViewModel: HistoryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,9 +35,11 @@ class HistoryFragment : Fragment() {
 
         database = FirebaseDatabase.getInstance("https://sikligtas-default-rtdb.asia-southeast1.firebasedatabase.app/")
 
-
         adapter = HistoryFragmentAdapter()
         recyclerView.adapter = adapter
+
+        // Initialize HistoryViewModel
+        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
 
         val historyRef = database.getReference("history")
 
@@ -43,11 +47,12 @@ class HistoryFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val historyItems = mutableListOf<HistoryItem>()
                 for (child in snapshot.children) {
+                    val date = child.key ?: ""
                     val startLoc = child.child("startLoc").getValue(String::class.java) ?: ""
                     val endLoc = child.child("endLoc").getValue(String::class.java) ?: ""
                     val elapsedTime = child.child("elapsedTime").getValue(String::class.java) ?: ""
                     val distance = child.child("distance").getValue(String::class.java) ?: ""
-                    historyItems.add(HistoryItem(startLoc, endLoc, elapsedTime, distance))
+                    historyItems.add(HistoryItem(date, startLoc, endLoc, elapsedTime, distance))
                 }
                 adapter.setHistoryItems(historyItems)
             }

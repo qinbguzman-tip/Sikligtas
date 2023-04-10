@@ -16,6 +16,7 @@ class HistoryFragmentAdapter: RecyclerView.Adapter<HistoryFragmentAdapter.ViewHo
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = historyItems[position]
+        holder.date.text = item.date
         holder.startLoc.text = item.startLoc
         holder.endLoc.text = item.endLoc
         holder.elapsedTime.text = item.elapsedTime
@@ -32,6 +33,7 @@ class HistoryFragmentAdapter: RecyclerView.Adapter<HistoryFragmentAdapter.ViewHo
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val date: TextView = view.findViewById(R.id.curr_date_time)
         val startLoc: TextView = view.findViewById(R.id.start_loc)
         val endLoc: TextView = view.findViewById(R.id.end_loc)
         val elapsedTime: TextView = view.findViewById(R.id.elapsed_time)
