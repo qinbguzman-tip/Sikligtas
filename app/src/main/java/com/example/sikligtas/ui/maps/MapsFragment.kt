@@ -116,7 +116,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
 
         // Create a JetsonNanoClient instance and connect to Jetson Nano
-        jnc = JetsonNanoClient("192.168.254.146", 8080)
+        jnc = JetsonNanoClient("192.168.43.189", 8080)
         jnc.setOnDataReceivedListener(this)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
@@ -286,7 +286,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-            jnc = JetsonNanoClient("192.168.254.146", 8080)
+            jnc = JetsonNanoClient("192.168.43.189", 8080)
             startCountDown()
             binding.startButton.disable()
             binding.startButton.hide()
@@ -297,10 +297,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun onStopButtonClicked() {
+
         stopForegroundService()
         jnc.close()
-        tts.shutdown()
-        Alerter.hide()
         binding.stopButton.hide()
         binding.startButton.show()
     }

@@ -104,8 +104,8 @@ class HomeFragment : Fragment() {
 
         val wifiSettingsTextView = view.findViewById<TextView>(R.id.wifi_connect)
         wifiSettingsTextView.setOnClickListener {
-            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-            startActivity(intent)
+//            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+//            startActivity(intent)
         }
 
     }
