@@ -102,13 +102,14 @@ class HomeFragment : Fragment() {
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
         displayNameTextView.text = firstName
 
+        // Access WiFi Settings
         val wifiSettingsTextView = view.findViewById<TextView>(R.id.wifi_connect)
         wifiSettingsTextView.setOnClickListener {
-//            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-//            startActivity(intent)
+            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+            startActivity(intent)
         }
-
     }
+    
 
     private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {
         val weatherAPI =

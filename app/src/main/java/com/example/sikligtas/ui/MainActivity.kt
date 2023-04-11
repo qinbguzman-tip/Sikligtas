@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.homeFragment,
-                R.id.profileFragment,
-                R.id.historyFragment,
+//                R.id.profileFragment,
+//                R.id.historyFragment,
             ), drawerLayout
         )
         setSupportActionBar(findViewById(R.id.navToolbar))
