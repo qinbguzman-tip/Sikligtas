@@ -65,12 +65,13 @@ class JetsonNanoClient(host: String, port: Int) {
     private fun processData(data: String) {
         // Process data received from Jetson Nano
         val outputList: List<String> = data.split(",")
+        val type = outputList[0]
         val direction = outputList[1]
         val distance = outputList[2]
         val hazard = outputList[3]
 
         // Call the onDataReceived() function of the listener with the extracted parameters
-        onDataReceivedListener?.onDataReceived("$direction,$distance,$hazard")
+        onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard")
 
         Log.d(TAG, "Received data: $data")
     }
