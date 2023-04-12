@@ -69,6 +69,9 @@
             app:destination="@id/permissionFragment"
             app:popUpTo="@id/permissionFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
@@ -96,6 +99,18 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_profileFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.sikligtas.ui.about.AboutFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_aboutFragment_to_mapsFragment"
             app:destination="@id/mapsFragment" />
     </fragment>
 </navigation>
