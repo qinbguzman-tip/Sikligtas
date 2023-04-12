@@ -83,7 +83,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private lateinit var tts: TextToSpeech
     private lateinit var jnc: JetsonNanoClient
+
+    private val hostIP: String = "192.168.43.189"
+
     private val dataBuffer = LinkedList<String>()
+    private var previousDistance: String? = null
+    private var previousType: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -116,7 +121,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
 
         // Create a JetsonNanoClient instance and connect to Jetson Nano
-        jnc = JetsonNanoClient("192.168.43.189", 8080)
+        
+        jnc = JetsonNanoClient(hostIP, 8080)
         jnc.setOnDataReceivedListener(this)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
@@ -286,7 +292,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-            jnc = JetsonNanoClient("192.168.43.189", 8080)
+        
+            jnc = JetsonNanoClient(hostIP, 8080)
+
             startCountDown()
             binding.startButton.disable()
             binding.startButton.hide()
@@ -297,9 +305,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun onStopButtonClicked() {
-
         stopForegroundService()
         jnc.close()
+
         binding.stopButton.hide()
         binding.startButton.show()
     }
@@ -351,70 +359,83 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             val data = dataBuffer.removeFirst()
             val outputList: List<String> = data.split(",")
 
-            val direction = outputList[0]
+            val type = outputList[0]
+            val direction = outputList[1]
 
-            val meters = outputList[1].toInt() * 0.01
+            val meters = outputList[2].toInt() * 0.01
             val distance = String.format("%.2f", meters).toDouble().toString()
 
-            val hazard = outputList[2]
+            val hazard = outputList[3]
 
             if (hazard == "true") {
                 // Call the alertHazard() function with the extracted parameters
-                alertHazard(distance, direction)
+                alertHazard(distance, type, direction)
             } else {
                 Log.d("Alert","Not Hazard")
             }
         }
     }
 
-    private fun alertHazard(distance: String, direction: String) {
-        tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String) {
-                        val vAlert = Alerter.create(requireActivity())
-                            .setTitle("Hazard Alert")
-                            .setText(getString(R.string.hazard_info, distance, direction))
-                            .setBackgroundColorRes(R.color.md_theme_light_error)
-                            .setDuration(5000)
-                            .show()
-                        when (direction) {
-                            "Left" -> {
-                                vAlert?.setIcon(R.drawable.ic_left_arrow)
-                            }
-                            "Right" -> {
-                                vAlert?.setIcon(R.drawable.ic_right_arrow)
-                            }
-                            "Back" -> {
-                                vAlert?.setIcon(R.drawable.ic_behind_arrow)
+    private fun alertHazard(distance: String, type: String, direction: String) {
+        if (distance != previousDistance || type != previousType) {
+
+            previousDistance = distance
+            previousType = type
+
+            tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener { status ->
+                if (status == TextToSpeech.SUCCESS) {
+                    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onStart(utteranceId: String) {
+                            val vAlert = Alerter.create(requireActivity())
+                                .setTitle("Hazard Alert")
+                                .setText(getString(R.string.hazard_info, distance, type, direction))
+                                .setBackgroundColorRes(R.color.md_theme_light_error)
+                                .setDuration(5000)
+                                .show()
+                            when (direction) {
+                                "Left" -> {
+                                    vAlert?.setIcon(R.drawable.ic_left_arrow)
+                                }
+                                "Right" -> {
+                                    vAlert?.setIcon(R.drawable.ic_right_arrow)
+                                }
+                                "Back" -> {
+                                    vAlert?.setIcon(R.drawable.ic_behind_arrow)
+                                }
                             }
                         }
-                    }
 
-                    override fun onDone(utteranceId: String) {
-                        tts.shutdown()
-                    }
+                        override fun onDone(utteranceId: String) {
+                            tts.shutdown()
+                        }
 
-                    override fun onError(utteranceId: String) {
-                        tts.shutdown()
-                    }
-                })
-                val params = HashMap<String, String>()
-                params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
-                tts.speak(
-                    getString(R.string.hazard_info, distance, direction),
-                    TextToSpeech.QUEUE_FLUSH,
-                    params
-                )
-                tts.setSpeechRate(1.5f)
-            } else {
-                Log.e("TTS", "TextToSpeech initialization failed")
-            }
-        })
+                        override fun onError(utteranceId: String) {
+                            tts.shutdown()
+                        }
+                    })
+                    val params = HashMap<String, String>()
+                    params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
+                    tts.speak(
+                        getString(R.string.hazard_info, distance, type, direction),
+                        TextToSpeech.QUEUE_FLUSH,
+                        params
+                    )
+                    tts.setSpeechRate(1.5f)
+                } else {
+                    Log.e("TTS", "TextToSpeech initialization failed")
+                }
+            })
+
+            Log.d("Alert","Received Alert: $distance, $type, $direction")
+        } else {
+            // Do not proceed if the current alert is the same as the previous one
+            Log.d("Alert","No Alert")
+        }
     }
 
     private fun stopForegroundService() {
         binding.startButton.disable()
+        jnc.close()
         sendActionCommandToService(ACTION_SERVICE_STOP)
     }
 
@@ -527,8 +548,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         _binding = null
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        jnc.close()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
+        jnc.close()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
