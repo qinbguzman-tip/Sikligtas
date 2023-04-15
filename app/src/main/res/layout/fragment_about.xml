@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="150dp"
-                android:text="Accurate vehicle hazard detection and classification"
+                android:text="Vehicle hazard detection and classification"
                 android:textAlignment="center" />
         </LinearLayout>
 

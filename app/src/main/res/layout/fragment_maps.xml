@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="tracking"
             type="com.example.sikligtas.ui.maps.MapsFragment" />
@@ -27,6 +26,10 @@
             app:layout_constraintVertical_bias="0.5"
             tools:context=".ui.maps.MapsFragment" />
 
+        <include
+            android:id="@+id/bottom_sheet_maps"
+            layout="@layout/bottom_nav_maps" />
+
         <View
             android:id="@+id/border_light"
             android:layout_width="match_parent"
@@ -46,48 +49,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.IconOnly"
-            android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:visibility="invisible"
-            app:icon="@drawable/ic_play"
-            app:iconSize="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            style="@style/Widget.MaterialComponents.Button.IconOnly"-->
+<!--            android:id="@+id/start_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="25dp"-->
+<!--            android:visibility="invisible"-->
+<!--            app:icon="@drawable/ic_play"-->
+<!--            app:iconSize="30dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.IconOnly"
-            android:id="@+id/stop_button"
-            observeTracking="@{tracking.started}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:backgroundTint="@color/md_theme_light_error"
-            android:textColor="@color/white"
-            android:visibility="invisible"
-            app:icon="@drawable/ic_stop"
-            app:iconSize="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            style="@style/Widget.MaterialComponents.Button.IconOnly"-->
+<!--            android:id="@+id/stop_button"-->
+<!--            observeTracking="@{tracking.started}"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="25dp"-->
+<!--            android:backgroundTint="@color/md_theme_light_error"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:visibility="invisible"-->
+<!--            app:icon="@drawable/ic_stop"-->
+<!--            app:iconSize="30dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.IconOnly"
-            android:id="@+id/reset_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/md_theme_light_error"
-            android:visibility="invisible"
-            app:icon="@drawable/ic_reset"
-            app:iconSize="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            style="@style/Widget.MaterialComponents.Button.IconOnly"-->
+<!--            android:id="@+id/reset_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:backgroundTint="@color/md_theme_light_error"-->
+<!--            android:visibility="invisible"-->
+<!--            app:icon="@drawable/ic_reset"-->
+<!--            app:iconSize="30dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,6 +10,8 @@ import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
@@ -57,6 +59,7 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
@@ -99,13 +102,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.lifecycleOwner = this
         binding.tracking = this
 
-        binding.startButton.setOnClickListener {
+        binding.bottomSheetMaps.startButton.setOnClickListener {
             onStartButtonClicked()
         }
-        binding.stopButton.setOnClickListener {
+        binding.bottomSheetMaps.stopButton.setOnClickListener {
             onStopButtonClicked()
         }
-        binding.resetButton.setOnClickListener {
+        binding.bottomSheetMaps.resetButton.setOnClickListener {
             onResetButtonClicked()
         }
 
@@ -121,7 +124,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         mapFragment?.getMapAsync(this)
 
         // Create a JetsonNanoClient instance and connect to Jetson Nano
-        
+
         jnc = JetsonNanoClient(hostIP, 8080)
         jnc.setOnDataReceivedListener(this)
 
@@ -204,7 +207,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         map.setOnMyLocationButtonClickListener(this)
         map.setOnMarkerClickListener(this)
         lifecycleScope.launch {
-            binding.startButton.show()
+            binding.bottomSheetMaps.startButton.show()
         }
         map.uiSettings.apply {
             isZoomControlsEnabled = false
@@ -240,7 +243,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             if (it != null) {
                 locationList = it
                 if (locationList.size > 1) {
-                    binding.stopButton.enable()
+                    binding.bottomSheetMaps.stopButton.enable()
                 }
                 drawPolyline()
                 followPolyline()
@@ -292,13 +295,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-        
             jnc = JetsonNanoClient(hostIP, 8080)
 
             startCountDown()
-            binding.startButton.disable()
-            binding.startButton.hide()
-            binding.stopButton.show()
+            binding.bottomSheetMaps.startButton.disable()
+            binding.bottomSheetMaps.startButton.hide()
+            binding.bottomSheetMaps.stopButton.show()
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -308,8 +310,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         stopForegroundService()
         jnc.close()
 
-        binding.stopButton.hide()
-        binding.startButton.show()
+        binding.bottomSheetMaps.stopButton.hide()
+        binding.bottomSheetMaps.startButton.show()
     }
 
     private fun onResetButtonClicked() {
@@ -318,7 +320,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun startCountDown() {
         binding.timerTextView.show()
-        binding.stopButton.disable()
+        binding.bottomSheetMaps.stopButton.disable()
         val timer: CountDownTimer = object : CountDownTimer(4000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val currentSecond = millisUntilFinished / 1000
@@ -348,6 +350,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
         timer.start()
     }
+
+    private fun updateInfo() {
+        val currentTime = Calendar.getInstance().time
+        val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+        val formattedTime = timeFormat.format(currentTime)
+        binding.bottomSheetMaps.timeTv.text = formattedTime
+
+        if (startTime != 0L && stopTime == 0L) {
+            binding.bottomSheetMaps.elapsedTimeTv.text = calculateElapsedTime(startTime, System.currentTimeMillis())
+        }
+
+        binding.bottomSheetMaps.distanceTv.text = calculateTotalDistance(locationList) + " KM"
+    }
+
+
+    private val updateInfoHandler = Handler(Looper.getMainLooper())
+    private val updateInfoRunnable = object : Runnable {
+        override fun run() {
+            updateInfo()
+            updateInfoHandler.postDelayed(this, 1000)
+        }
+    }
+
 
     override fun onDataReceived(data: String) {
         dataBuffer.add(data)
@@ -434,7 +459,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun stopForegroundService() {
-        binding.startButton.disable()
+        binding.bottomSheetMaps.startButton.disable()
         jnc.close()
         sendActionCommandToService(ACTION_SERVICE_STOP)
     }
@@ -479,12 +504,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             delay(2500)
             val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
             findNavController().navigate(directions)
-            binding.startButton.apply {
+            binding.bottomSheetMaps.startButton.apply {
                 hide()
                 enable()
             }
-            binding.stopButton.hide()
-            binding.resetButton.show()
+            binding.bottomSheetMaps.stopButton.hide()
+            binding.bottomSheetMaps.resetButton.show()
         }
     }
 
@@ -508,11 +533,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
             locationList.clear()
             markerList.clear()
+
             TrackerService.stopTime.value = 0L
             TrackerService.startTime.value = 0L
 
-            binding.resetButton.hide()
-            binding.startButton.show()
+            binding.bottomSheetMaps.distanceTv.text = "0.0"
+            binding.bottomSheetMaps.elapsedTimeTv.text = "00.00"
+
+            binding.bottomSheetMaps.resetButton.hide()
+            binding.bottomSheetMaps.startButton.show()
         }
     }
 
@@ -546,6 +575,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         bottomNavigationView.visibility = View.VISIBLE
 //        (activity as AppCompatActivity).supportActionBar?.show()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateInfoHandler.post(updateInfoRunnable)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        updateInfoHandler.removeCallbacks(updateInfoRunnable)
     }
 
     override fun onStop() {

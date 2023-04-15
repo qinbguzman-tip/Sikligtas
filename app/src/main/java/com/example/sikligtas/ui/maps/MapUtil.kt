@@ -20,15 +20,20 @@ object MapUtil {
             .build()
     }
 
-    fun calculateElapsedTime(starTime: Long, stopTime: Long): String {
-        val elapsedTime = stopTime - starTime
+    fun calculateElapsedTime(startTime: Long, stopTime: Long): String {
+        val elapsedTime = stopTime - startTime
 
         val seconds = (elapsedTime / 1000).toInt() % 60
         val minutes = (elapsedTime / (1000 * 60) % 60)
         val hours = (elapsedTime / (1000 * 60 * 60) % 24)
 
-        return "$hours:$minutes:$seconds"
+        return if (hours > 0) {
+            String.format("%d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            String.format("%02d:%02d", minutes, seconds)
+        }
     }
+
 
     fun calculateTotalDistance(locationList: MutableList<LatLng>): String {
         if(locationList.size > 1) {
@@ -37,7 +42,7 @@ object MapUtil {
             val kilometers = meters / 1000
             return DecimalFormat("#.##").format(kilometers)
         }
-        return "0.00"
+        return "0"
     }
 
 }
