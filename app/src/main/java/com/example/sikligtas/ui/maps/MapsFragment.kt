@@ -87,7 +87,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var tts: TextToSpeech
     private lateinit var jnc: JetsonNanoClient
 
-    private val hostIP: String = "192.168.43.189"
+    private val hostIP: String = "192.168.42.1"
 
     private val dataBuffer = LinkedList<String>()
     private var previousDistance: String? = null
@@ -125,7 +125,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         // Create a JetsonNanoClient instance and connect to Jetson Nano
 
-        jnc = JetsonNanoClient(hostIP, 8080)
+        jnc = JetsonNanoClient(hostIP, 12345)
         jnc.setOnDataReceivedListener(this)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
@@ -295,9 +295,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-            jnc = JetsonNanoClient(hostIP, 8080)
-
+            jnc = JetsonNanoClient(hostIP, 12345)
             startCountDown()
+
             binding.bottomSheetMaps.startButton.disable()
             binding.bottomSheetMaps.startButton.hide()
             binding.bottomSheetMaps.stopButton.show()
@@ -308,7 +308,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStopButtonClicked() {
         stopForegroundService()
-        jnc.close()
+        jnc.stop()
 
         binding.bottomSheetMaps.stopButton.hide()
         binding.bottomSheetMaps.startButton.show()
@@ -460,7 +460,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun stopForegroundService() {
         binding.bottomSheetMaps.startButton.disable()
-        jnc.close()
         sendActionCommandToService(ACTION_SERVICE_STOP)
     }
 
@@ -538,7 +537,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             TrackerService.startTime.value = 0L
 
             binding.bottomSheetMaps.distanceTv.text = "0.0"
-            binding.bottomSheetMaps.elapsedTimeTv.text = "00.00"
+            binding.bottomSheetMaps.elapsedTimeTv.text = "00:00"
 
             binding.bottomSheetMaps.resetButton.hide()
             binding.bottomSheetMaps.startButton.show()
@@ -585,18 +584,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     override fun onPause() {
         super.onPause()
         updateInfoHandler.removeCallbacks(updateInfoRunnable)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        jnc.close()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        jnc.close()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {

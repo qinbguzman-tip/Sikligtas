@@ -1,10 +1,7 @@
 package com.example.sikligtas
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.InputStream
 import java.net.Socket
 
@@ -18,6 +15,7 @@ class JetsonNanoClient(host: String, port: Int) {
 
     private var socket: Socket? = null
     private var input: InputStream? = null
+    private var isConnected = true
 
     private var onDataReceivedListener: OnDataReceivedListener? = null
 
@@ -27,32 +25,35 @@ class JetsonNanoClient(host: String, port: Int) {
 
     init {
         GlobalScope.launch(Dispatchers.IO) {
-            try {
-                socket = Socket(host, port)
-                input = socket!!.getInputStream()
+            while (isConnected) {
+                try {
+                    socket = Socket(host, port)
+                    input = socket!!.getInputStream()
 
-                val bufferSize = 1024 // Adjust the buffer size based on your requirements
-                val buffer = ByteArray(bufferSize)
+                    val bufferSize = 1024 // Adjust the buffer size based on your requirements
+                    val buffer = ByteArray(bufferSize)
 
-                while (true) {
-                    val bytesRead = input!!.read(buffer)
-                    if (bytesRead != -1) {
-                        val data = String(buffer, 0, bytesRead)
-                        val key = generateKey(data) // Generate a key for the data
-                        if (!processedKeys.contains(key)) { // Check if the key has already been processed
-                            processedKeys.add(key) // Add the key to the set of processed keys
-                            withContext(Dispatchers.Main) {
-                                processData(data)
+                    while (isConnected) {
+                        val bytesRead = input!!.read(buffer)
+                        if (bytesRead != -1) {
+                            val data = String(buffer, 0, bytesRead)
+                            val key = generateKey(data) // Generate a key for the data
+                            if (!processedKeys.contains(key)) { // Check if the key has already been processed
+                                processedKeys.add(key) // Add the key to the set of processed keys
+                                withContext(Dispatchers.Main) {
+                                    processData(data)
+                                }
                             }
+                        } else {
+                            break
                         }
-                    } else {
-                        break
                     }
-                }
 
-                socket!!.close()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error: ", e)
+                    socket!!.close()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error: ", e)
+                    delay(5000)
+                }
             }
         }
     }
@@ -76,7 +77,8 @@ class JetsonNanoClient(host: String, port: Int) {
         Log.d(TAG, "Received data: $data")
     }
 
-    fun close() {
+    fun stop() {
+        isConnected = false
         socket?.close()
         input?.close()
     }
