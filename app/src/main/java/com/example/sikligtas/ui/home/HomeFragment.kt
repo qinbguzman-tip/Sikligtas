@@ -6,15 +6,18 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.sikligtas.R
+import com.example.sikligtas.data.HistoryItem
 import com.example.sikligtas.databinding.FragmentHomeBinding
 import com.example.sikligtas.util.Constants
 import com.google.android.gms.common.api.ResolvableApiException
@@ -23,6 +26,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +53,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fetchLatestHistoryData()
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -86,7 +93,6 @@ class HomeFragment : Fragment() {
             )
         }
 
-
         // Get the current user
         val user = FirebaseAuth.getInstance().currentUser
 
@@ -109,7 +115,50 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
     }
-    
+
+    private fun fetchLatestHistoryData() {
+        // Access the Firebase instances
+        val auth = FirebaseAuth.getInstance()
+        val database = FirebaseDatabase.getInstance("https://sikligtas-default-rtdb.asia-southeast1.firebasedatabase.app/")
+
+        // Get the current user
+        val user = auth.currentUser
+        if (user != null) {
+            // Get the reference to the user's history
+            val historyRef = database.getReference("users").child(user.uid).child("history")
+
+            // Fetch the latest history data
+            historyRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val latestEntry = snapshot.children.first()
+                        val currLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
+                        val distance = latestEntry.child("distance").getValue(String::class.java) ?: "None"
+                        val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
+
+                        // Update the UI
+                        binding.currLocation.text = currLocation
+                        binding.distance.text = distance
+                        binding.duration.text = duration
+                    } else {
+                        binding.currLocation.text = "None"
+                        binding.distance.text = "None"
+                        binding.duration.text = "None"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("HomeFragment", "fetchLatestHistoryData:onCancelled", error.toException())
+                }
+            })
+        } else {
+            // Handle the case when the user is not logged in
+            binding.currLocation.text = "None"
+            binding.distance.text = "None"
+            binding.duration.text = "None"
+        }
+    }
+
 
     private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {
         val weatherAPI =

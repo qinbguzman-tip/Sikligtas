@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Geocoder
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -22,13 +23,16 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sikligtas.JetsonNanoClient
 import com.example.sikligtas.OnDataReceivedListener
 import com.example.sikligtas.R
+import com.example.sikligtas.data.HistoryItem
 import com.example.sikligtas.databinding.FragmentMapsBinding
 import com.example.sikligtas.service.TrackerService
+import com.example.sikligtas.ui.history.HistoryViewModel
 import com.example.sikligtas.ui.maps.MapUtil.calculateElapsedTime
 import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.ui.maps.MapUtil.setCameraPosition
@@ -54,6 +58,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.tapadoo.alerter.Alerter
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
@@ -81,6 +86,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var markerList = mutableListOf<Marker>()
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var auth: FirebaseAuth
+    private lateinit var historyViewModel: HistoryViewModel
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
@@ -127,6 +134,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         jnc = JetsonNanoClient(hostIP, 12345)
         jnc.setOnDataReceivedListener(this)
+
+        auth = FirebaseAuth.getInstance()
+        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
 //        toolbar = requireActivity().findViewById(R.id.navToolbar)
@@ -495,10 +505,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun displayResults() {
-        val result = com.example.sikligtas.model.Result(
-            calculateTotalDistance(locationList),
-            calculateElapsedTime(startTime, stopTime)
-        )
+        val totalDistance = calculateTotalDistance(locationList)
+        val elapsedTime = calculateElapsedTime(startTime, stopTime)
+        val result = com.example.sikligtas.model.Result(totalDistance, elapsedTime)
+
+        // Save history data
+        saveHistoryData(totalDistance, elapsedTime)
+
         lifecycleScope.launch {
             delay(2500)
             val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
@@ -509,6 +522,42 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             }
             binding.bottomSheetMaps.stopButton.hide()
             binding.bottomSheetMaps.resetButton.show()
+        }
+    }
+
+    private fun saveHistoryData(totalDistance: String, elapsedTime: String) {
+        // Check if the user is logged in
+        val user = auth.currentUser
+        if (user != null && locationList.isNotEmpty()) {
+            // Get start and end locations
+            val startLocation = locationList.first()
+            val endLocation = locationList.last()
+
+            // Get the name of the place
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            val startAddress = geocoder.getFromLocation(startLocation.latitude, startLocation.longitude, 1)
+            val endAddress = geocoder.getFromLocation(endLocation.latitude, endLocation.longitude, 1)
+
+            val startLoc = startAddress?.firstOrNull()?.let { address ->
+                "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
+            } ?: "Unknown"
+            val endLoc = endAddress?.firstOrNull()?.let { address ->
+                "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
+            } ?: "Unknown"
+
+            // Create a HistoryItem object
+            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+            val historyItem = HistoryItem(date, startLoc, endLoc, elapsedTime, totalDistance)
+
+            // Save the history item using HistoryViewModel
+            historyViewModel.saveHistoryItem(historyItem)
+        } else {
+            // Handle the case when the user is not logged in or locationList is empty
+            Toast.makeText(
+                requireContext(),
+                "You must be logged in and have a valid location to save history data.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
