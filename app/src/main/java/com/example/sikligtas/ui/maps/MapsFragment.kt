@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sikligtas.JetsonNanoClient
+import com.example.sikligtas.OnConnectionErrorListener
 import com.example.sikligtas.OnDataReceivedListener
 import com.example.sikligtas.R
 import com.example.sikligtas.data.HistoryItem
@@ -138,11 +139,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-
-        // Create a JetsonNanoClient instance and connect to Jetson Nano
-
-        jnc = JetsonNanoClient(hostIP, 8080)
-        jnc!!.setOnDataReceivedListener(this)
 
         auth = FirebaseAuth.getInstance()
         historyViewModel = ViewModelProvider(this)[HistoryViewModel::class.java]
@@ -316,6 +312,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
             jnc = JetsonNanoClient(hostIP, 8080)
+            jnc!!.setOnDataReceivedListener(this)
+            jnc!!.setOnConnectionErrorListener(object : OnConnectionErrorListener {
+                override fun onConnectionError(exception: Exception) {
+                    Alerter.create(requireActivity())
+                        .setTitle("Connection Error")
+                        .setText("Failed to connect to Jetson Nano, check the device if Turned ON.")
+                        .setBackgroundColorRes(R.color.orange)
+                        .setDuration(10000)
+                        .setIcon(R.drawable.ic_error)
+                        .show()
+                }
+            })
             startCountDown()
 
             binding.bottomSheetMaps.startButton.disable()
@@ -677,7 +685,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             tts.shutdown()
         }
 
-        // Dismiss ongoing Alerter if any
         if (Alerter.isShowing) {
             Alerter.hide()
         }

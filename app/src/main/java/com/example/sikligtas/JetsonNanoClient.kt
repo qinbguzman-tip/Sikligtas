@@ -3,10 +3,15 @@ package com.example.sikligtas
 import android.util.Log
 import kotlinx.coroutines.*
 import java.io.InputStream
+import java.net.ConnectException
 import java.net.Socket
 
 interface OnDataReceivedListener {
     fun onDataReceived(data: String)
+}
+
+interface OnConnectionErrorListener {
+    fun onConnectionError(exception: Exception)
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -18,9 +23,14 @@ class JetsonNanoClient(host: String, port: Int) {
     private var isConnected = true
 
     private var onDataReceivedListener: OnDataReceivedListener? = null
+    private var onConnectionErrorListener: OnConnectionErrorListener? = null
 
     fun setOnDataReceivedListener(listener: OnDataReceivedListener) {
         onDataReceivedListener = listener
+    }
+
+    fun setOnConnectionErrorListener(listener: OnConnectionErrorListener) {
+        onConnectionErrorListener = listener
     }
 
     init {
@@ -50,6 +60,9 @@ class JetsonNanoClient(host: String, port: Int) {
                     }
 
                     socket!!.close()
+                } catch (e: ConnectException) {
+                    onConnectionErrorListener?.onConnectionError(e)
+                    isConnected = false
                 } catch (e: Exception) {
                     Log.e("JetsonNanoClient", "Error: ", e)
                     delay(5000)
