@@ -2,7 +2,6 @@ package com.example.sikligtas.util
 
 import android.Manifest
 import android.content.Context
-import android.location.LocationManager
 import android.os.Build
 import androidx.fragment.app.Fragment
 import com.example.sikligtas.util.Constants.PERMISSION_BACKGROUND_LOCATION_REQUEST_CODE

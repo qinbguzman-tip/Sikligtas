@@ -1,3 +1,6 @@
+package com.example.sikligtas.ui.history
+
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +30,7 @@ class HistoryFragmentAdapter: RecyclerView.Adapter<HistoryFragmentAdapter.ViewHo
         return historyItems.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setHistoryItems(items: List<HistoryItem>) {
         historyItems = items
         notifyDataSetChanged()

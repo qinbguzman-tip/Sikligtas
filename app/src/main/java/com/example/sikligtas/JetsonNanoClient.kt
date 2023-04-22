@@ -9,8 +9,8 @@ interface OnDataReceivedListener {
     fun onDataReceived(data: String)
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 class JetsonNanoClient(host: String, port: Int) {
-    private val TAG = "JetsonNanoClient"
     private val processedKeys = mutableSetOf<String>()
 
     private var socket: Socket? = null
@@ -51,7 +51,7 @@ class JetsonNanoClient(host: String, port: Int) {
 
                     socket!!.close()
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error: ", e)
+                    Log.e("JetsonNanoClient", "Error: ", e)
                     delay(5000)
                 }
             }
@@ -74,12 +74,14 @@ class JetsonNanoClient(host: String, port: Int) {
         // Call the onDataReceived() function of the listener with the extracted parameters
         onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard")
 
-        Log.d(TAG, "Received data: $data")
+        Log.d("JetsonNanoClient", "Received data: $data")
     }
 
-    fun stop() {
+    fun disconnect() {
         isConnected = false
         socket?.close()
         input?.close()
+
+        onDataReceivedListener = null
     }
 }

@@ -66,14 +66,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
-    // Fused Location
+    // Google Maps
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // Util
     implementation 'com.google.maps.android:android-maps-utils:2.2.0'
-
-    // Location Setting Request
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // Dagger - Hilt
     implementation "com.google.dagger:hilt-android:2.44"

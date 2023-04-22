@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
+@Suppress("DEPRECATION")
 class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentPermissionBinding? = null

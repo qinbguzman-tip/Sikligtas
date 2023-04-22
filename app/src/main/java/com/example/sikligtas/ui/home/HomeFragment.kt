@@ -1,6 +1,7 @@
 package com.example.sikligtas.ui.home
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -11,13 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.sikligtas.R
-import com.example.sikligtas.data.HistoryItem
 import com.example.sikligtas.databinding.FragmentHomeBinding
 import com.example.sikligtas.util.Constants
 import com.google.android.gms.common.api.ResolvableApiException
@@ -27,7 +26,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +34,7 @@ import org.json.JSONObject
 import java.net.URL
 import java.util.*
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -44,7 +43,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -99,7 +98,7 @@ class HomeFragment : Fragment() {
         // Access First Name
         val displayName = user?.displayName
         val firstNameParts = displayName?.split(" ")
-        val firstName = if (firstNameParts?.size ?: 0 >= 2) {
+        val firstName = if ((firstNameParts?.size ?: 0) >= 2) {
             firstNameParts?.take(2)?.joinToString(" ")
         } else {
             firstNameParts?.getOrNull(0)
@@ -116,6 +115,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchLatestHistoryData() {
         // Access the Firebase instances
         val auth = FirebaseAuth.getInstance()
@@ -127,8 +127,12 @@ class HomeFragment : Fragment() {
             // Get the reference to the user's history
             val historyRef = database.getReference("users").child(user.uid).child("history")
 
+            // Store the binding in a local variable
+            val localBinding = binding
+
             // Fetch the latest history data
             historyRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val latestEntry = snapshot.children.first()
@@ -137,13 +141,13 @@ class HomeFragment : Fragment() {
                         val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
 
                         // Update the UI
-                        binding.currLocation.text = currLocation
-                        binding.distance.text = distance
-                        binding.duration.text = duration
+                        localBinding.currLocation.text = currLocation
+                        localBinding.distance.text = distance
+                        localBinding.duration.text = duration
                     } else {
-                        binding.currLocation.text = "None"
-                        binding.distance.text = "None"
-                        binding.duration.text = "None"
+                        localBinding.currLocation.text = "None"
+                        localBinding.distance.text = "None"
+                        localBinding.duration.text = "None"
                     }
                 }
 
@@ -158,7 +162,6 @@ class HomeFragment : Fragment() {
             binding.duration.text = "None"
         }
     }
-
 
     private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {
         val weatherAPI =

@@ -1,6 +1,5 @@
 package com.example.sikligtas.ui.history
 
-import HistoryFragmentAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -43,9 +42,7 @@ class HistoryFragment : Fragment() {
         recyclerView.adapter = adapter
 
         // Initialize HistoryViewModel
-        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
-
-        val historyRef = database.getReference("history")
+        historyViewModel = ViewModelProvider(this)[HistoryViewModel::class.java]
 
         val user = auth.currentUser
         if (user != null) {

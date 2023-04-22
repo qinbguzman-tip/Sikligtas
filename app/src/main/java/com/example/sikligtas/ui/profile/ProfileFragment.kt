@@ -30,9 +30,6 @@ class ProfileFragment : Fragment() {
         // Access the user's display name
         val displayName = user?.displayName
 
-        // Access the user's phone number
-        val photoURL = user?.photoUrl
-
         // Update the UI with the user information
         val emailTextView = view.findViewById<TextView>(R.id.emailEt)
         emailTextView.text = email

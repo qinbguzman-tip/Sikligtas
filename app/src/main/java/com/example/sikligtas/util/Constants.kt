@@ -20,7 +20,4 @@ object Constants {
     const val LOCATION_UPDATE_INTERVAL = 4000L
     const val LOCATION_FASTEST_UPDATE_INTERVAL = 2000L
 
-    const val UPDATE_INTERVAL: Long = 5000 // 5 seconds
-    const val FASTEST_UPDATE_INTERVAL: Long = 2000 // 2 seconds
-
 }

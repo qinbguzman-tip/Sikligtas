@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
-import com.example.sikligtas.JetsonNanoClient
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.ActivityMainBinding
 import com.example.sikligtas.util.Permissions.hasLocationPermission
@@ -32,8 +31,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.homeFragment,
-//                R.id.profileFragment,
-//                R.id.historyFragment,
             ), drawerLayout
         )
         setSupportActionBar(findViewById(R.id.navToolbar))

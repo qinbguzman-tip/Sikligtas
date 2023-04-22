@@ -3,10 +3,12 @@ package com.example.sikligtas.ui.maps
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import androidx.fragment.app.Fragment
 import android.os.Bundle
@@ -19,7 +21,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -67,6 +72,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
     OnMarkerClickListener,
     EasyPermissions.PermissionCallbacks, OnDataReceivedListener {
@@ -76,7 +82,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private lateinit var map: GoogleMap
 
-    val started = MutableLiveData(false)
+    private val started = MutableLiveData(false)
 
     private var startTime = 0L
     private var stopTime = 0L
@@ -92,9 +98,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     private lateinit var tts: TextToSpeech
-    private lateinit var jnc: JetsonNanoClient
+    private var jnc: JetsonNanoClient? = null
 
-    private val hostIP: String = "192.168.42.1"
+    private val hostIP: String = "192.168.43.189"
 
     private val dataBuffer = LinkedList<String>()
     private var previousDistance: String? = null
@@ -118,6 +124,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.bottomSheetMaps.resetButton.setOnClickListener {
             onResetButtonClicked()
         }
+        binding.bottomSheetMaps.homeButton.setOnClickListener {
+            findNavController().navigate(R.id.action_mapsFragment_to_homeFragment)
+        }
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -132,17 +141,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         // Create a JetsonNanoClient instance and connect to Jetson Nano
 
-        jnc = JetsonNanoClient(hostIP, 12345)
-        jnc.setOnDataReceivedListener(this)
+        jnc = JetsonNanoClient(hostIP, 8080)
+        jnc!!.setOnDataReceivedListener(this)
 
         auth = FirebaseAuth.getInstance()
-        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
+        historyViewModel = ViewModelProvider(this)[HistoryViewModel::class.java]
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav)
-//        toolbar = requireActivity().findViewById(R.id.navToolbar)
+        toolbar = requireActivity().findViewById(R.id.navToolbar)
 
         bottomNavigationView.visibility = View.GONE
-//        (activity as AppCompatActivity).supportActionBar?.hide()
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -187,6 +196,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
+    @Deprecated("Deprecated in Java")
     @SuppressLint("MissingPermission")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -305,12 +315,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-            jnc = JetsonNanoClient(hostIP, 12345)
+            jnc = JetsonNanoClient(hostIP, 8080)
             startCountDown()
 
             binding.bottomSheetMaps.startButton.disable()
             binding.bottomSheetMaps.startButton.hide()
             binding.bottomSheetMaps.stopButton.show()
+            binding.bottomSheetMaps.homeButton.isEnabled = false
         } else {
             requestBackgroundLocationPermission(this)
         }
@@ -318,10 +329,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStopButtonClicked() {
         stopForegroundService()
-        jnc.stop()
+
+        stopAlert()
+        disconnectJetsonNanoClient()
 
         binding.bottomSheetMaps.stopButton.hide()
         binding.bottomSheetMaps.startButton.show()
+        binding.bottomSheetMaps.homeButton.isEnabled = true
     }
 
     private fun onResetButtonClicked() {
@@ -335,7 +349,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             override fun onTick(millisUntilFinished: Long) {
                 val currentSecond = millisUntilFinished / 1000
                 if (currentSecond.toString() == "0") {
-                    binding.timerTextView.text = "GO"
+                    binding.timerTextView.text = getString(R.string.Go)
                     binding.timerTextView.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -361,6 +375,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         timer.start()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         val currentTime = Calendar.getInstance().time
         val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
@@ -368,12 +383,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         binding.bottomSheetMaps.timeTv.text = formattedTime
 
         if (startTime != 0L && stopTime == 0L) {
-            binding.bottomSheetMaps.elapsedTimeTv.text = calculateElapsedTime(startTime, System.currentTimeMillis())
+            binding.bottomSheetMaps.elapsedTimeTv.text =
+                calculateElapsedTime(startTime, System.currentTimeMillis())
         }
 
         binding.bottomSheetMaps.distanceTv.text = calculateTotalDistance(locationList) + " KM"
     }
-
 
     private val updateInfoHandler = Handler(Looper.getMainLooper())
     private val updateInfoRunnable = object : Runnable {
@@ -406,7 +421,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 // Call the alertHazard() function with the extracted parameters
                 alertHazard(distance, type, direction)
             } else {
-                Log.d("Alert","Not Hazard")
+                Log.d("Alert", "Not Hazard")
             }
         }
     }
@@ -417,7 +432,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             previousDistance = distance
             previousType = type
 
-            tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener { status ->
+            tts = TextToSpeech(requireContext()) { status ->
                 if (status == TextToSpeech.SUCCESS) {
                     tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                         override fun onStart(utteranceId: String) {
@@ -444,6 +459,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                             tts.shutdown()
                         }
 
+                        @Deprecated("Deprecated in Java")
                         override fun onError(utteranceId: String) {
                             tts.shutdown()
                         }
@@ -459,12 +475,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 } else {
                     Log.e("TTS", "TextToSpeech initialization failed")
                 }
-            })
+            }
 
-            Log.d("Alert","Received Alert: $distance, $type, $direction")
+            Log.d("Alert", "Received Alert: $distance, $type, $direction")
         } else {
             // Do not proceed if the current alert is the same as the previous one
-            Log.d("Alert","No Alert")
+            Log.d("Alert", "No Alert")
         }
     }
 
@@ -504,24 +520,48 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayResults() {
         val totalDistance = calculateTotalDistance(locationList)
         val elapsedTime = calculateElapsedTime(startTime, stopTime)
-        val result = com.example.sikligtas.model.Result(totalDistance, elapsedTime)
 
         // Save history data
         saveHistoryData(totalDistance, elapsedTime)
 
         lifecycleScope.launch {
             delay(2500)
-            val directions = MapsFragmentDirections.actionMapsFragmentToResultFragment(result)
-            findNavController().navigate(directions)
-            binding.bottomSheetMaps.startButton.apply {
-                hide()
-                enable()
+            // Create a dialog
+            val builder = AlertDialog.Builder(requireContext())
+            val inflater = requireActivity().layoutInflater
+            val dialogView = inflater.inflate(R.layout.dialog_maps, null)
+
+            val (startLoc, endLoc) = getStartAndEndLocations()
+
+            dialogView.findViewById<TextView>(R.id.startLocation).text = " $startLoc"
+            dialogView.findViewById<TextView>(R.id.endLocation).text = " $endLoc"
+            dialogView.findViewById<TextView>(R.id.distance).text = totalDistance
+            dialogView.findViewById<TextView>(R.id.elapsed_time).text = elapsedTime
+
+            val alertDialog = builder.setView(dialogView)
+                .setCancelable(false)
+                .create()
+
+            // Set the transparent background
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            // Set up the done button click listener
+            val doneBtn = dialogView.findViewById<Button>(R.id.doneBtn)
+            doneBtn.setOnClickListener {
+                alertDialog.dismiss()
+                binding.bottomSheetMaps.startButton.apply {
+                    hide()
+                    enable()
+                }
+                binding.bottomSheetMaps.stopButton.hide()
+                binding.bottomSheetMaps.resetButton.show()
             }
-            binding.bottomSheetMaps.stopButton.hide()
-            binding.bottomSheetMaps.resetButton.show()
+
+            alertDialog.show()
         }
     }
 
@@ -529,21 +569,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         // Check if the user is logged in
         val user = auth.currentUser
         if (user != null && locationList.isNotEmpty()) {
-            // Get start and end locations
-            val startLocation = locationList.first()
-            val endLocation = locationList.last()
-
-            // Get the name of the place
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            val startAddress = geocoder.getFromLocation(startLocation.latitude, startLocation.longitude, 1)
-            val endAddress = geocoder.getFromLocation(endLocation.latitude, endLocation.longitude, 1)
-
-            val startLoc = startAddress?.firstOrNull()?.let { address ->
-                "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
-            } ?: "Unknown"
-            val endLoc = endAddress?.firstOrNull()?.let { address ->
-                "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
-            } ?: "Unknown"
+            val (startLoc, endLoc) = getStartAndEndLocations()
 
             // Create a HistoryItem object
             val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
@@ -561,7 +587,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-    @SuppressLint("MissingPermission")
+    private fun getStartAndEndLocations(): Pair<String, String> {
+        val startLocation = locationList.first()
+        val endLocation = locationList.last()
+
+        // Get the name of the place
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        val startAddress =
+            geocoder.getFromLocation(startLocation.latitude, startLocation.longitude, 1)
+        val endAddress =
+            geocoder.getFromLocation(endLocation.latitude, endLocation.longitude, 1)
+
+        val startLoc = startAddress?.firstOrNull()?.let { address ->
+            "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
+        } ?: "Unknown"
+        val endLoc = endAddress?.firstOrNull()?.let { address ->
+            "${address.thoroughfare ?: ""}, ${address.locality ?: ""}"
+        } ?: "Unknown"
+
+        return Pair(startLoc, endLoc)
+    }
+
+
+    @SuppressLint("MissingPermission", "SetTextI18n")
     private fun mapReset() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
             val lastKnownLocation = LatLng(
@@ -618,26 +666,52 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         onStartButtonClicked()
     }
 
+    private fun disconnectJetsonNanoClient() {
+        jnc?.disconnect()
+        jnc = null
+    }
+
+    private fun stopAlert() {
+        if (::tts.isInitialized && tts.isSpeaking) {
+            tts.stop()
+            tts.shutdown()
+        }
+
+        // Dismiss ongoing Alerter if any
+        if (Alerter.isShowing) {
+            Alerter.hide()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         bottomNavigationView.visibility = View.VISIBLE
-//        (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.show()
         _binding = null
+
+        disconnectJetsonNanoClient()
+        stopAlert()
     }
 
     override fun onResume() {
         super.onResume()
         updateInfoHandler.post(updateInfoRunnable)
+
+        if (jnc == null) {
+            jnc = JetsonNanoClient(hostIP, 8000) // Replace with your host and port
+        }
     }
 
     override fun onPause() {
         super.onPause()
         updateInfoHandler.removeCallbacks(updateInfoRunnable)
+
+        disconnectJetsonNanoClient()
+        stopAlert()
     }
 
     override fun onMarkerClick(p0: Marker): Boolean {
         return true
     }
-
 }
 

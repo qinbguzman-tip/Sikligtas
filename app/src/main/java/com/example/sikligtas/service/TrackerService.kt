@@ -9,11 +9,9 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
-import com.example.sikligtas.ui.maps.MapUtil
 import com.example.sikligtas.ui.maps.MapUtil.calculateTotalDistance
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_START
 import com.example.sikligtas.util.Constants.ACTION_SERVICE_STOP
@@ -27,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class TrackerService : LifecycleService() {
 
@@ -57,7 +56,7 @@ class TrackerService : LifecycleService() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
-            result?.locations?.let { locations ->
+            result.locations.let { locations ->
                 for (location in locations) {
                     updateLocationList(location)
                     updateNotificationInfo()
