@@ -7,9 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.ActivityMainBinding
 import com.example.sikligtas.ui.home.HomeFragmentDirections
@@ -59,8 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         // fabButton
         binding.playBtn.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToMapsFragment()
-            findNavController(R.id.navHostFragment).navigate(action)
+            findNavController(R.id.navHostFragment).navigate(R.id.action_global_mapsFragment)
         }
 
     }
@@ -72,5 +73,4 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
-
 }
