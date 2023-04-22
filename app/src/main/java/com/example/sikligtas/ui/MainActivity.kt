@@ -4,12 +4,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.ActivityMainBinding
+import com.example.sikligtas.ui.home.HomeFragmentDirections
+import com.example.sikligtas.ui.maps.MapsFragment
 import com.example.sikligtas.util.Permissions.hasLocationPermission
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,6 +56,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SignInActivity::class.java))
             true
         }
+
+        // fabButton
+        binding.playBtn.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeFragmentToMapsFragment()
+            findNavController(R.id.navHostFragment).navigate(action)
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

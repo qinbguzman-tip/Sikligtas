@@ -39,9 +39,9 @@
                     android:text=" Start Location"
                     android:textColor="@color/gray"
                     android:textAllCaps="true"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/location_pin"
+                    app:drawableStartCompat="@drawable/ic_location"
                     app:drawableTint="@color/gray" />
 
                 <TextView
@@ -53,8 +53,8 @@
                     android:textAllCaps="true"
                     android:textStyle="bold"
                     android:textColor="@color/md_theme_light_primary"
-                    android:textSize="15sp"
-                    app:drawableStartCompat="@drawable/location_pin"
+                    android:textSize="12sp"
+                    app:drawableStartCompat="@drawable/ic_location"
                     app:drawableTint="@color/md_theme_light_primary" />
 
                 <LinearLayout
@@ -96,6 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:layout_marginStart="15dp"
                         android:orientation="vertical">
 
                         <TextView

@@ -149,6 +149,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         bottomNavigationView.visibility = View.GONE
         (activity as AppCompatActivity).supportActionBar?.hide()
 
+        // Hide the "playBtn" button
+        val playBtn = requireActivity().findViewById<Button>(R.id.playBtn)
+        playBtn.visibility = View.GONE
+
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
 
