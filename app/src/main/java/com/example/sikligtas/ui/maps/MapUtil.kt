@@ -28,13 +28,18 @@ object MapUtil {
         }
     }
 
-
     fun calculateTotalDistance(locationList: MutableList<LatLng>): String {
-        if(locationList.size > 1) {
-            val meters =
-                SphericalUtil.computeDistanceBetween(locationList.first(), locationList.last())
-            val kilometers = meters / 1000
-            return DecimalFormat("#.##").format(kilometers)
+        if (locationList.size > 1) {
+            var totalMeters = 0.0
+
+            for (i in 0 until locationList.size - 1) {
+                val currentLocation = locationList[i]
+                val nextLocation = locationList[i + 1]
+                totalMeters += SphericalUtil.computeDistanceBetween(currentLocation, nextLocation)
+            }
+
+            val totalKilometers = totalMeters / 1000
+            return DecimalFormat("#.##").format(totalKilometers)
         }
         return "0"
     }
