@@ -88,9 +88,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var startTime = 0L
     private var stopTime = 0L
 
-    private var lastAlertTime: Long = 0
-    private val minAlertInterval: Long = 5000
-
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
@@ -109,6 +106,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private val dataBuffer = LinkedList<String>()
     private var previousDistance: String? = null
     private var previousType: String? = null
+    private var lastAlertTime: Long = 0
+    private val minAlertInterval: Long = 5000
 
     enum class Direction {
         LEFT, RIGHT, BACK
