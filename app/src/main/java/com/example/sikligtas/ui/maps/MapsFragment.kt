@@ -88,6 +88,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private var startTime = 0L
     private var stopTime = 0L
 
+    private var lastAlertTime: Long = 0
+    private val minAlertInterval: Long = 5000
+
     private var locationList = mutableListOf<LatLng>()
     private var polylineList = mutableListOf<Polyline>()
     private var markerList = mutableListOf<Marker>()
@@ -106,6 +109,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private val dataBuffer = LinkedList<String>()
     private var previousDistance: String? = null
     private var previousType: String? = null
+
+    enum class Direction {
+        LEFT, RIGHT, BACK
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -406,7 +413,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-
     override fun onDataReceived(data: String) {
         dataBuffer.add(data)
         processBufferedData()
@@ -418,7 +424,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             val outputList: List<String> = data.split(",")
 
             val type = outputList[0]
-            val direction = outputList[1]
+            val direction = when (outputList[1]) {
+                "Left" -> Direction.LEFT
+                "Right" -> Direction.RIGHT
+                "Back" -> Direction.BACK
+                else -> throw IllegalArgumentException("Invalid direction")
+            }
 
             val meters = outputList[2].toInt() * 0.01
             val distance = String.format("%.2f", meters).toDouble().toString()
@@ -426,7 +437,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             val hazard = outputList[3]
 
             if (hazard == "true") {
-                // Call the alertHazard() function with the extracted parameters
                 alertHazard(distance, type, direction)
             } else {
                 Log.d("Alert", "Not Hazard")
@@ -434,62 +444,73 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
-    private fun alertHazard(distance: String, type: String, direction: String) {
-        if (distance != previousDistance || type != previousType) {
+    private fun alertHazard(distance: String, type: String, direction: Direction) {
+        val currentTime = System.currentTimeMillis()
 
-            previousDistance = distance
-            previousType = type
+        if (currentTime - lastAlertTime >= minAlertInterval) {
 
-            tts = TextToSpeech(requireContext()) { status ->
-                if (status == TextToSpeech.SUCCESS) {
-                    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                        override fun onStart(utteranceId: String) {
-                            val vAlert = Alerter.create(requireActivity())
-                                .setTitle("Hazard Alert")
-                                .setText(getString(R.string.hazard_info, distance, type, direction))
-                                .setBackgroundColorRes(R.color.md_theme_light_error)
-                                .setDuration(5000)
-                                .show()
-                            when (direction) {
-                                "Left" -> {
-                                    vAlert?.setIcon(R.drawable.ic_left_arrow)
+            if (distance != previousDistance || type != previousType) {
+                previousDistance = distance
+                previousType = type
+
+                lastAlertTime = currentTime
+
+                tts = TextToSpeech(requireContext()) { status ->
+                    if (status == TextToSpeech.SUCCESS) {
+                        tts.apply {
+                            setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                                override fun onStart(utteranceId: String) {
+                                    showAlert(distance, type, direction)
                                 }
-                                "Right" -> {
-                                    vAlert?.setIcon(R.drawable.ic_right_arrow)
-                                }
-                                "Back" -> {
-                                    vAlert?.setIcon(R.drawable.ic_behind_arrow)
-                                }
-                            }
-                        }
 
-                        override fun onDone(utteranceId: String) {
-                            tts.shutdown()
-                        }
+                                override fun onDone(utteranceId: String) {
+                                    tts.shutdown()
+                                }
 
-                        @Deprecated("Deprecated in Java")
-                        override fun onError(utteranceId: String) {
-                            tts.shutdown()
+                                @Deprecated("Deprecated in Java")
+                                override fun onError(utteranceId: String) {
+                                    tts.shutdown()
+                                }
+                            })
+                            val params = HashMap<String, String>()
+                            params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
+                            speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
+                            setSpeechRate(1.5f)
                         }
-                    })
-                    val params = HashMap<String, String>()
-                    params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
-                    tts.speak(
-                        getString(R.string.hazard_info, distance, type, direction),
-                        TextToSpeech.QUEUE_FLUSH,
-                        params
-                    )
-                    tts.setSpeechRate(1.5f)
-                } else {
-                    Log.e("TTS", "TextToSpeech initialization failed")
+                    } else {
+                        Log.e("TTS", "TextToSpeech initialization failed")
+                    }
                 }
-            }
 
-            Log.d("Alert", "Received Alert: $distance, $type, $direction")
+                Log.d("Alert", "Received Alert: $distance, $type, ${direction.name}")
+            } else {
+                Log.d("Alert", "No Alert")
+            }
         } else {
-            // Do not proceed if the current alert is the same as the previous one
-            Log.d("Alert", "No Alert")
+            Log.d("Alert", "Min interval not passed")
         }
+    }
+
+    private fun showAlert(distance: String, type: String, direction: Direction) {
+        val vAlert = Alerter.create(requireActivity())
+            .setTitle("Hazard Alert")
+            .setText(getString(R.string.hazard_info, distance, type, direction.name))
+            .setBackgroundColorRes(R.color.md_theme_light_error)
+            .setDuration(5000)
+
+        when (direction) {
+            Direction.LEFT -> {
+                vAlert.setIcon(R.drawable.ic_left_arrow)
+            }
+            Direction.RIGHT -> {
+                vAlert.setIcon(R.drawable.ic_right_arrow)
+            }
+            Direction.BACK -> {
+                vAlert.setIcon(R.drawable.ic_behind_arrow)
+            }
+        }
+
+        vAlert.show()
     }
 
     private fun stopForegroundService() {

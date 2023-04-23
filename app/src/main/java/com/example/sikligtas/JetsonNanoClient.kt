@@ -44,6 +44,7 @@ class JetsonNanoClient(host: String, port: Int) {
                     val buffer = ByteArray(bufferSize)
 
                     while (isConnected) {
+                        Log.d("JetsonNanoClient", "Successfully Connected")
                         val bytesRead = input!!.read(buffer)
                         if (bytesRead != -1) {
                             val data = String(buffer, 0, bytesRead)
@@ -61,6 +62,7 @@ class JetsonNanoClient(host: String, port: Int) {
 
                     socket!!.close()
                 } catch (e: ConnectException) {
+                    Log.d("JetsonNanoClient", "Failed to Connect")
                     onConnectionErrorListener?.onConnectionError(e)
                     isConnected = false
                 } catch (e: Exception) {
