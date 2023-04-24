@@ -25,38 +25,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:defaultNavHost="true"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
             app:layout_constraintTop_toBottomOf="@id/navToolbar"
             app:navGraph="@navigation/nav_graph"
             tools:layout_editor_absoluteY="64dp" />
 
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNav"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomNav"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                android:background="@drawable/bottom_nav_background"
-                app:menu="@menu/bottom_nav_menu"
-                app:labelVisibilityMode="labeled"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/playBtn"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:backgroundTint="@color/md_theme_light_card_primary"
-                app:icon="@drawable/ic_play"
-                app:iconSize="30dp"
-                app:iconTint="@color/white"
-                app:cornerRadius="50dp"
-                app:layout_anchor="@id/bottomNav"
-                app:layout_anchorGravity="top|center"/>
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:layout_height="wrap_content"
+            android:background="@color/gradient_start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

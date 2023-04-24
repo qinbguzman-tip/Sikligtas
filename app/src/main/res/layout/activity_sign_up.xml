@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/accountlbl">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/firstNameEt"
+            android:id="@+id/fnameEt"
             style="@style/LoginTextInputInnerFieldStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fnameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/lastNameEt"
+            android:id="@+id/lnameEt"
             style="@style/LoginTextInputInnerFieldStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
