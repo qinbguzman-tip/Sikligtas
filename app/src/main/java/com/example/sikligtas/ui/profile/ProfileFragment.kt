@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sikligtas.R
+import com.example.sikligtas.ui.home.HomeFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {

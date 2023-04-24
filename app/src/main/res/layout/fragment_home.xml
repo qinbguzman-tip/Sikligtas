@@ -148,7 +148,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="3dp"
-                        app:srcCompat="@drawable/location_pin" />
+                        app:srcCompat="@drawable/ic_location"
+                        app:tint="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -214,11 +215,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weatherCard">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -230,157 +226,123 @@
 
                         <LinearLayout
                             android:id="@+id/last_travelLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/travellbl"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:letterSpacing="0.05"
-                                android:text="Last Travel"
-                                android:textAlignment="textEnd"
-                                android:textAllCaps="true"
-                                android:textColor="@color/md_theme_light_secondary"
-                                android:textSize="15sp" />
-
-                            <ImageView
-                                android:id="@+id/start_end_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                app:srcCompat="@drawable/start_end_icon" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@id/content"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="bottom|end"
-                            android:layout_margin="20dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/curr_location"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:letterSpacing="0.05"
-                                android:maxWidth="100dp"
-                                android:text="Anonas, Quezon City"
-                                android:textAlignment="textEnd"
-                                android:textColor="@color/md_theme_light_primary"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/locationlbl"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:letterSpacing="0.02"
-                                android:text="Last Location"
-                                android:textAlignment="center"
-                                android:textAllCaps="true"
-                                android:textColor="@color/md_theme_light_secondary"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:gravity="end|bottom"
                             android:orientation="vertical">
 
                             <LinearLayout
-                                android:id="@+id/distanceLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end|bottom"
-                                android:orientation="vertical">
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_gravity="start">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:src="@drawable/recent"
+                                    android:layout_gravity="center"
+                                    app:tint="@color/md_theme_light_primary" />
+
+                                <TextView
+                                    android:id="@+id/travellbl"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:letterSpacing="0.05"
+                                    android:layout_marginStart="10dp"
+                                    android:text="Recent Journey"
+                                    android:textAlignment="textEnd"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/md_theme_light_primary"
+                                    android:textSize="15sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="20dp">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:orientation="horizontal"
-                                    android:layout_gravity="end|bottom">
+                                    android:layout_gravity="center">
 
                                     <TextView
                                         android:id="@+id/distance"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="5"
+                                        android:text="00.00"
                                         android:textColor="@color/md_theme_light_primary"
-                                        android:textSize="20sp" />
+                                        android:textSize="24sp"
+                                        android:textStyle="bold"/>
 
                                     <TextView
                                         android:id="@+id/unit"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginStart="5dp"
-                                        android:text="km"
-                                        android:textColor="@color/md_theme_light_secondary"
-                                        android:textSize="13sp" />
+                                        android:text=" km"
+                                        android:letterSpacing="0.05"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"/>
+
                                 </LinearLayout>
-
-                                <TextView
-                                    android:id="@+id/distancelbl"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:letterSpacing="0.02"
-                                    android:text="Distance"
-                                    android:textAlignment="textEnd"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/md_theme_light_secondary"
-                                    android:textSize="10sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/durationLayout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end|bottom"
-                                android:layout_marginTop="5dp"
-                                android:orientation="vertical">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_gravity="bottom|end"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:layout_gravity="center">
 
                                     <TextView
                                         android:id="@+id/duration"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="30"
+                                        android:text="00:00:00"
+                                        android:layout_marginStart="50dp"
                                         android:textColor="@color/md_theme_light_primary"
-                                        android:textSize="20sp" />
+                                        android:textSize="24sp"
+                                        android:textStyle="bold" />
 
-                                    <TextView
-                                        android:id="@+id/time_unit"
-                                        android:layout_width="match_parent"
+                                    <ImageView
+                                        android:id="@+id/clock"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="5dp"
-                                        android:text="m"
-                                        android:textColor="@color/md_theme_light_secondary"
-                                        android:textSize="13sp" />
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_clock" />
+
                                 </LinearLayout>
 
-                                <TextView
-                                    android:id="@+id/durationlbl"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:letterSpacing="0.02"
-                                    android:text="Duration"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/md_theme_light_secondary"
-                                    android:textSize="10sp" />
                             </LinearLayout>
-                            </LinearLayout>
-                        </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/startLocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0.05"
+                                android:maxLines="1"
+                                android:text=" Anonas, Quezon City"
+                                android:drawableLeft="@drawable/ic_location"
+                                android:drawableTint="@color/gray"
+                                android:textColor="@color/gray"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/endLocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0.05"
+                                android:maxLines="1"
+                                android:text=" Anonas, Quezon City"
+                                android:drawableLeft="@drawable/ic_location"
+                                android:drawableTint="@color/md_theme_light_primary"
+                                android:textColor="@color/md_theme_light_primary"
+                                android:textSize="13sp" />
+                             </LinearLayout>
                     </LinearLayout>
             </androidx.cardview.widget.CardView>
 

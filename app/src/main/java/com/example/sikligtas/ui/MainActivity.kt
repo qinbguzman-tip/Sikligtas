@@ -4,12 +4,18 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.ActivityMainBinding
+import com.example.sikligtas.ui.home.HomeFragmentDirections
+import com.example.sikligtas.ui.maps.MapsFragment
 import com.example.sikligtas.util.Permissions.hasLocationPermission
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,6 +58,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SignInActivity::class.java))
             true
         }
+
+        // fabButton
+        binding.playBtn.setOnClickListener {
+            findNavController(R.id.navHostFragment).navigate(R.id.action_global_mapsFragment)
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -61,5 +73,4 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
-
 }
