@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -44,7 +43,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -99,14 +98,14 @@ class HomeFragment : Fragment() {
         // Access First Name
         val displayName = user?.displayName
         val firstNameParts = displayName?.split(" ")
-        val firstName = if (firstNameParts?.size ?: 0 >= 2) {
+        val firstName = if ((firstNameParts?.size ?: 0) >= 2) {
             firstNameParts?.take(2)?.joinToString(" ")
         } else {
             firstNameParts?.getOrNull(0)
         }
 
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
-        displayNameTextView.text = "$firstName"
+        displayNameTextView.text = firstName
 
         // Access WiFi Settings
         val wifiSettingsTextView = view.findViewById<TextView>(R.id.wifi_connect)
@@ -114,9 +113,9 @@ class HomeFragment : Fragment() {
             val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
             startActivity(intent)
         }
-
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchLatestHistoryData() {
         // Access the Firebase instances
         val auth = FirebaseAuth.getInstance()
@@ -128,26 +127,27 @@ class HomeFragment : Fragment() {
             // Get the reference to the user's history
             val historyRef = database.getReference("users").child(user.uid).child("history")
 
+            // Store the binding in a local variable
+            val localBinding = binding
+
             // Fetch the latest history data
             historyRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val latestEntry = snapshot.children.first()
-                        val startLocation = latestEntry.child("startLoc").getValue(String::class.java) ?: "None"
-                        val endLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
+                        val currLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
                         val distance = latestEntry.child("distance").getValue(String::class.java) ?: "None"
                         val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
 
                         // Update the UI
-                        binding.startLocation.text = startLocation
-                        binding.endLocation.text = endLocation
-                        binding.distance.text = distance
-                        binding.duration.text = duration
+                        localBinding.currLocation.text = currLocation
+                        localBinding.distance.text = distance
+                        localBinding.duration.text = duration
                     } else {
-                        binding.startLocation.text = "None"
-                        binding.endLocation.text = "None"
-                        binding.distance.text = "None"
-                        binding.duration.text = "None"
+                        localBinding.currLocation.text = "None"
+                        localBinding.distance.text = "None"
+                        localBinding.duration.text = "None"
                     }
                 }
 
@@ -157,13 +157,11 @@ class HomeFragment : Fragment() {
             })
         } else {
             // Handle the case when the user is not logged in
-            binding.startLocation.text = "None"
-            binding.endLocation.text = "None"
+            binding.currLocation.text = "None"
             binding.distance.text = "None"
             binding.duration.text = "None"
         }
     }
-
 
     private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {
         val weatherAPI =
@@ -204,14 +202,6 @@ class HomeFragment : Fragment() {
         } catch (e: Exception) {
             // Handle the error
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // Show the "playBtn" button
-        val playBtn = requireActivity().findViewById<Button>(R.id.playBtn)
-        playBtn.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

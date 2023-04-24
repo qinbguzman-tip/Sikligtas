@@ -5,10 +5,6 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
-    <action
-        android:id="@+id/action_global_mapsFragment"
-        app:destination="@id/mapsFragment" />
-
     <fragment
         android:id="@+id/permissionFragment"
         android:name="com.example.sikligtas.ui.permission.PermissionFragment"

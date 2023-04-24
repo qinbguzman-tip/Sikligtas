@@ -49,7 +49,6 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"/>
-
     </application>
 
 </manifest>

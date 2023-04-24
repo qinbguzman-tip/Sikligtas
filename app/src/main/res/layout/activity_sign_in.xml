@@ -186,7 +186,6 @@
                 android:drawableLeft="@drawable/google"
                 android:minHeight="50dp"
                 android:paddingHorizontal="30dp"
-                android:layout_marginTop="10dp"
                 android:text="@string/sign_in_with_google"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

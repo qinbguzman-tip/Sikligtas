@@ -12,12 +12,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="200dp"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/start_end_ic" />
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:orientation="vertical">
 
@@ -26,10 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Start Location"
-                app:drawableStartCompat="@drawable/ic_location"
-                android:drawableTint="@color/gray"
-                android:textColor="@color/gray"
-                android:textColorHint="@color/gray"
+                android:textColor="@color/md_theme_light_card_primary"
+                android:textColorHint="@color/md_theme_light_card_primary"
                 android:textSize="16sp" />
 
             <TextView
@@ -38,10 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="End Location"
-                app:drawableStartCompat="@drawable/ic_location"
-                android:drawableTint="@color/md_theme_light_card_primary"
-                android:textColor="@color/md_theme_light_card_primary"
-                android:textColorHint="@color/md_theme_light_card_primary"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:textSize="16sp" />
 
             <TextView
@@ -49,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="15dp"
                 android:hint="00/00/00 00:00"
                 android:textColor="@color/gray"
                 android:textColorHint="@color/gray"
