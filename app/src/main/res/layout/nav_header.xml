@@ -9,25 +9,17 @@
     android:padding="16dp" >
 
     <ImageView
-        android:layout_width="89dp"
+        android:layout_width="match_parent"
         android:layout_height="89dp"
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/logo_icon" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sikligtas"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:letterSpacing="0.2"
-        android:layout_gravity="center"/>
+        android:src="@drawable/sk_logo" />
 
     <TextView
         android:layout_width="wrap_content"
