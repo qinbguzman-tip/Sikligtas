@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -315,27 +316,46 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         }
     }
 
+    private fun getSavedIpAddress(): String? {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        return sharedPref?.getString("ip_address", null)
+    }
+
+    private fun showIpErrorDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("No Device IP Found")
+        builder.setMessage("Please set up the Device IP address first in the Home Page.")
+        builder.setIcon(R.drawable.ic_error)
+        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+        builder.show()
+    }
+
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
-            jnc = JetsonNanoClient(hostIP, 8080)
-            jnc!!.setOnDataReceivedListener(this)
-            jnc!!.setOnConnectionErrorListener(object : OnConnectionErrorListener {
-                override fun onConnectionError(exception: Exception) {
-                    Alerter.create(requireActivity())
-                        .setTitle("Connection Error")
-                        .setText("Failed to connect to Jetson Nano, check the device if Turned ON.")
-                        .setBackgroundColorRes(R.color.orange)
-                        .setDuration(10000)
-                        .setIcon(R.drawable.ic_error)
-                        .show()
-                }
-            })
-            startCountDown()
+            val hostIP = getSavedIpAddress()
+            if (hostIP != null) {
+                jnc = JetsonNanoClient(hostIP, 8080)
+                jnc!!.setOnDataReceivedListener(this)
+                jnc!!.setOnConnectionErrorListener(object : OnConnectionErrorListener {
+                    override fun onConnectionError(exception: Exception) {
+                        Alerter.create(requireActivity())
+                            .setTitle("Connection Error")
+                            .setText("Failed to connect to Jetson Nano, check the device if turned ON or if the IP Address is correct.")
+                            .setBackgroundColorRes(R.color.orange)
+                            .setDuration(10000)
+                            .setIcon(R.drawable.ic_error)
+                            .show()
+                    }
+                })
+                startCountDown()
 
-            binding.bottomSheetMaps.startButton.disable()
-            binding.bottomSheetMaps.startButton.hide()
-            binding.bottomSheetMaps.stopButton.show()
-            binding.bottomSheetMaps.homeButton.isEnabled = false
+                binding.bottomSheetMaps.startButton.disable()
+                binding.bottomSheetMaps.startButton.hide()
+                binding.bottomSheetMaps.stopButton.show()
+                binding.bottomSheetMaps.homeButton.isEnabled = false
+            } else {
+                showIpErrorDialog()
+            }
         } else {
             requestBackgroundLocationPermission(this)
         }

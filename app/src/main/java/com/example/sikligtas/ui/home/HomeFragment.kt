@@ -2,16 +2,25 @@ package com.example.sikligtas.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -107,11 +116,87 @@ class HomeFragment : Fragment() {
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
         displayNameTextView.text = "$firstName"
 
-        // Access WiFi Settings
-        val wifiSettingsTextView = view.findViewById<TextView>(R.id.wifi_connect)
-        wifiSettingsTextView.setOnClickListener {
-            val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-            startActivity(intent)
+        val savedIpAddress = getSavedIpAddress()
+        updateWifiStatus(savedIpAddress)
+    }
+
+    private fun showIpInputDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_connect_device, null)
+        val ipAddressEditText = dialogView.findViewById<EditText>(R.id.ip_address_edittext)
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelBtn)
+        val saveButton = dialogView.findViewById<Button>(R.id.saveBtn)
+
+        val dialog = builder.setView(dialogView).create()
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        saveButton.setOnClickListener {
+            val ipAddress = ipAddressEditText.text.toString()
+            if (isValidIpAddress(ipAddress)) {
+                saveIpAddress(ipAddress)
+                updateWifiStatus(ipAddress)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(requireContext(), "Invalid IP address", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }
+
+
+    private fun isValidIpAddress(ipAddress: String): Boolean {
+        val ipAddressPattern =
+            "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$".toRegex()
+        return ipAddressPattern.matches(ipAddress)
+    }
+
+    private fun saveIpAddress(ipAddress: String) {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString("ip_address", ipAddress)
+            apply()
+        }
+    }
+
+    private fun getSavedIpAddress(): String? {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        return sharedPref?.getString("ip_address", null)
+    }
+
+    private fun removeIpAddress() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            remove("ip_address")
+            apply()
+        }
+    }
+
+    private fun updateWifiStatus(ipAddress: String?) {
+        if (ipAddress != null) {
+            binding.wifiIcon.setImageResource(R.drawable.ic_wifi_on)
+            binding.wifiIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_primary), PorterDuff.Mode.SRC_IN)
+            binding.wifiStatus.text = "Listening to $ipAddress"
+            binding.wifiConnect.text = "Change the Device IP"
+
+            binding.wifiConnect.setOnClickListener {
+                removeIpAddress()
+                updateWifiStatus(null)
+            }
+        } else {
+            binding.wifiIcon.setImageResource(R.drawable.ic_wifi_off)
+            binding.wifiIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_error), PorterDuff.Mode.SRC_IN)
+            binding.wifiStatus.text = "No Device Connected"
+            binding.wifiConnect.text = "Setup the Device IP"
+
+            binding.wifiConnect.setOnClickListener {
+                showIpInputDialog()
+            }
         }
     }
 

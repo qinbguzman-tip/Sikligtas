@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dialogCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Device IP Address"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ip_address_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ex. 192.168.1.100"
+                    android:inputType="text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/cancelBtn"
+                        android:backgroundTint="@color/md_theme_light_error"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:text="Cancel" />
+
+                    <Button
+                        android:id="@+id/saveBtn"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Save" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

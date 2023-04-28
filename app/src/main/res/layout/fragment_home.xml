@@ -423,7 +423,7 @@
                         android:layout_height="80dp"
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:layout_margin="20dp"
-                        app:srcCompat="@drawable/ic_wifi_on" />
+                        app:srcCompat="@drawable/ic_wifi_off" />
 
                     <TextView
                         android:id="@+id/wifi_status"
@@ -432,7 +432,7 @@
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:fontFamily="@font/manrope_extrabold"
                         android:letterSpacing="0.05"
-                        android:text="Sikligtas Device Connected"
+                        android:text="No Device Connected"
                         android:textAllCaps="true"
                         android:textColor="@color/gray"
                         android:textSize="11sp" />
@@ -445,7 +445,7 @@
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/manrope_extrabold"
                         android:letterSpacing="0.05"
-                        android:text="Listening to 192.168.43.189"
+                        android:text="Tap on Connect"
                         android:textAllCaps="true"
                         android:textColor="@color/seed"
                         android:textSize="11sp" />
