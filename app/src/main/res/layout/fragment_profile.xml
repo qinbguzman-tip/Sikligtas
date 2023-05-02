@@ -32,6 +32,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="15dp"
+            android:padding="25dp"
             android:background="@drawable/custom_card"
             android:minHeight="545dp"
             android:orientation="vertical"
@@ -43,9 +44,7 @@
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginEnd="20dp"
                 android:text="John Doe"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -56,9 +55,7 @@
                 android:id="@+id/infolbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
                 android:text="Personal Information"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -67,9 +64,7 @@
                 android:id="@+id/firstNamelbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
                 android:clickable="false"
                 android:text="First Name"
                 android:textColor="@color/gray"
@@ -90,8 +85,6 @@
                 android:id="@+id/lastNamelbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:clickable="false"
                 android:textColor="@color/gray"
@@ -112,8 +105,7 @@
                 android:id="@+id/emailLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+
                 android:layout_marginTop="10dp"
                 android:text="Email Address"
                 android:clickable="false"
@@ -130,22 +122,37 @@
                     android:textSize="15sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/editBtn"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:text="Edit Profile"
-                android:backgroundTint="@color/md_theme_light_card_primary" />
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/historyBtn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/md_theme_light_card_primary"
-                android:text="View History"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/editBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/md_theme_light_card_primary"
+                    android:text="Edit Profile"
+                    android:drawableLeft="@drawable/ic_edit"
+                    android:drawableTint="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/historyBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/md_theme_light_card_primary"
+                    android:text="View History"
+                    android:drawableLeft="@drawable/ic_history"
+                    android:drawableTint="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"/>
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
