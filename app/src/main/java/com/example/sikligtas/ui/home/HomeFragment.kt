@@ -4,15 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.provider.Settings
-import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -212,9 +209,6 @@ class HomeFragment : Fragment() {
             // Get the reference to the user's history
             val historyRef = database.getReference("users").child(user.uid).child("history")
 
-            // Store the binding in a local variable
-            val localBinding = binding
-
             // Fetch the latest history data
             historyRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -226,15 +220,19 @@ class HomeFragment : Fragment() {
                         val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
 
                         // Update the UI
-                        binding.startLocation.text = startLocation
-                        binding.endLocation.text = endLocation
-                        binding.distance.text = distance
-                        binding.duration.text = duration
+                        _binding?.let { binding ->
+                            binding.startLocation.text = startLocation
+                            binding.endLocation.text = endLocation
+                            binding.distance.text = distance
+                            binding.duration.text = duration
+                        }
                     } else {
-                        binding.startLocation.text = "None"
-                        binding.endLocation.text = "None"
-                        binding.distance.text = "None"
-                        binding.duration.text = "None"
+                        _binding?.let { binding ->
+                            binding.startLocation.text = "None"
+                            binding.endLocation.text = "None"
+                            binding.distance.text = "None"
+                            binding.duration.text = "None"
+                        }
                     }
                 }
 
