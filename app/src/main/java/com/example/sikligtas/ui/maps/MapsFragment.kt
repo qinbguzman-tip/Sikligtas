@@ -512,10 +512,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun showAlert(distance: String, type: String, direction: Direction) {
         val vAlert = Alerter.create(requireActivity())
-            .setTitle("Hazard Alert")
+            .setTitle("Nearby Hazard on your " + direction.name)
             .setText(getString(R.string.hazard_info, distance, type, direction.name))
-            .setBackgroundColorRes(R.color.md_theme_light_error)
+            .enableVibration(true)
             .setDuration(5000)
+
+        val distanceValue = distance.toDoubleOrNull() ?: return
+        when {
+            distanceValue > 1.50 -> vAlert.setBackgroundResource(R.color.yellow)
+            distanceValue in 1.00..1.50 -> vAlert.setBackgroundResource(R.color.orange)
+            else -> vAlert.setBackgroundResource(R.color.md_theme_light_error)
+        }
 
         when (direction) {
             Direction.LEFT -> {
