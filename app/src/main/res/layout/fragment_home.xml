@@ -240,7 +240,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_history"
+                                android:src="@drawable/recent"
                                 app:tint="@color/md_theme_light_primary" />
 
                             <TextView
