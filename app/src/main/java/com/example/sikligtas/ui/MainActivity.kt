@@ -11,6 +11,9 @@ import androidx.navigation.ui.*
 import com.example.sikligtas.R
 import com.example.sikligtas.databinding.ActivityMainBinding
 import com.example.sikligtas.util.Permissions.hasLocationPermission
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +50,22 @@ class MainActivity : AppCompatActivity() {
 
         // Calling intent for Logout
         firebaseAuth = FirebaseAuth.getInstance()
+        // Initialize Google sign-in options
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        // Create Google sign-in client
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         binding.navView.menu.findItem(R.id.logout).setOnMenuItemClickListener {
             firebaseAuth.signOut()
-            Toast.makeText(this, "You are logged out", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, SignInActivity::class.java))
+            googleSignInClient.signOut().addOnCompleteListener {
+                Toast.makeText(this, "You are logged out", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, SignInActivity::class.java))
+                finish()
+            }
             true
         }
     }
