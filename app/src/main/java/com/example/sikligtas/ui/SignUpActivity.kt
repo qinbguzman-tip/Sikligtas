@@ -59,7 +59,7 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Email address is already in use.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {

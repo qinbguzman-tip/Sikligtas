@@ -38,8 +38,8 @@ class ProfileFragment : Fragment() {
 
         // Split the display name into first name and last name
         val names = displayName?.split(" ")
-        val firstName = names?.getOrNull(0)
-        val lastName = names?.getOrNull(1)
+        val firstName = names?.dropLast(1)?.joinToString(" ")
+        val lastName = names?.lastOrNull()
 
         // Update the UI with the user information
         val emailTextView = view.findViewById<TextView>(R.id.emailEt)
@@ -80,8 +80,9 @@ class ProfileFragment : Fragment() {
 
         // Add a fragment result listener to receive the updated profile information
         parentFragmentManager.setFragmentResultListener("editProfile", viewLifecycleOwner) { _, bundle ->
-            val firstName = bundle.getString("firstName")
-            val lastName = bundle.getString("lastName")
+            val names = displayName?.split(" ")
+            val firstName = names?.dropLast(1)?.joinToString(" ")
+            val lastName = names?.lastOrNull()
             val email = bundle.getString("email")
 
             // Update the UI with the updated profile information
@@ -90,7 +91,6 @@ class ProfileFragment : Fragment() {
             // Reload the user's profile information to ensure it's up to date
             loadProfileData()
         }
-
         return view
     }
 
@@ -108,8 +108,8 @@ class ProfileFragment : Fragment() {
 
             // Split the display name into first name and last name
             val names = displayName?.split(" ")
-            val firstName = names?.getOrNull(0)
-            val lastName = names?.getOrNull(1)
+            val firstName = names?.dropLast(1)?.joinToString(" ")
+            val lastName = names?.lastOrNull()
 
             // Update the UI with the user information
             updateProfileUI(firstName, lastName, email)

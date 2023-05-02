@@ -70,6 +70,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
+                android:editable="false"
                 android:clickable="false"
                 android:text="First Name"
                 android:textColor="@color/gray"
@@ -81,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:clickable="false"
+                    android:focusableInTouchMode="false"
                     android:hint="First Name"
                     android:textSize="15sp" />
 
@@ -93,6 +95,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
+                android:editable="false"
                 android:clickable="false"
                 android:textColor="@color/gray"
                 android:textSize="15sp">
@@ -104,6 +107,7 @@
                     android:hint="Last Name"
                     android:editable="false"
                     android:clickable="false"
+                    android:focusableInTouchMode="false"
                     android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,6 +120,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Email Address"
+                android:editable="false"
                 android:clickable="false"
                 android:textColor="@color/gray"
                 android:textSize="15sp">
@@ -127,25 +132,38 @@
                     android:hint="Email Address"
                     android:editable="false"
                     android:clickable="false"
+                    android:focusableInTouchMode="false"
                     android:textSize="15sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/editBtn"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:text="Edit Profile"
-                android:backgroundTint="@color/md_theme_light_card_primary" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:gravity="center">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/historyBtn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/md_theme_light_card_primary"
-                android:text="View History"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/editBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/md_theme_light_card_primary"
+                    android:text="Edit Profile"
+                    android:layout_margin="5dp"
+                    android:drawableLeft="@drawable/ic_edit"
+                    android:drawableTint="@color/white"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/historyBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:backgroundTint="@color/md_theme_light_card_primary"
+                    android:text="View History"
+                    android:drawableLeft="@drawable/ic_history"
+                    android:drawableTint="@color/white"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

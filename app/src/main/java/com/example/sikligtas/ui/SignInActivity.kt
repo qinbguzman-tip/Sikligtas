@@ -60,11 +60,11 @@ class SignInActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Incorrect email or password.", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
-                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Fields cannot be empty.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -100,7 +100,7 @@ class SignInActivity : AppCompatActivity() {
         }
         firebaseAuth.sendPasswordResetEmail(email.text.toString()).addOnCompleteListener { task ->
             if (task.isSuccessful){
-                Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "A request has been sent to your email.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -126,7 +126,7 @@ class SignInActivity : AppCompatActivity() {
                 updateUI(account)
             }
         }else{
-            Toast.makeText(this, task.exception.toString() , Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Email already in use by another account." , Toast.LENGTH_SHORT).show()
         }
     }
 
