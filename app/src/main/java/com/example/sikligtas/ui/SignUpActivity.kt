@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.example.sikligtas.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -38,7 +39,7 @@ class SignUpActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Set the display name for the user
                             val displayName = if (firstName.isNotEmpty() && lastName.isNotEmpty()) {
-                                "$firstName"
+                                "$firstName $lastName"
                             } else if (firstName.isNotEmpty()) {
                                 firstName
                             } else if (lastName.isNotEmpty()) {
@@ -46,17 +47,19 @@ class SignUpActivity : AppCompatActivity() {
                             } else {
                                 "User"
                             }
-                            firebaseAuth.currentUser!!.updateProfile(
-                                com.google.firebase.auth.UserProfileChangeRequest.Builder()
-                                    .setDisplayName(displayName)
-                                    .build()
-                            ).addOnSuccessListener {
-                                val intent = Intent(this, SignInActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }.addOnFailureListener { e ->
-                                Log.e("SignUpActivity", "Error setting display name for user", e)
-                                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                            val user = firebaseAuth.currentUser
+                            val profileUpdates = UserProfileChangeRequest.Builder()
+                                .setDisplayName(displayName)
+                                .build()
+
+                            user?.updateProfile(profileUpdates)?.addOnCompleteListener { updateTask ->
+                                if (updateTask.isSuccessful) {
+                                    val intent = Intent(this, SignInActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                } else {
+                                    Toast.makeText(this, "Error setting display name", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         } else {
                             Toast.makeText(this, "Email address is already in use.", Toast.LENGTH_SHORT).show()

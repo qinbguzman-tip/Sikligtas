@@ -32,24 +32,23 @@ class ProfileFragment : Fragment() {
 
         // Access the user's display name
         val displayName = user?.displayName
-
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
         displayNameTextView.text = displayName
 
-        // Split the display name into first name and last name
-        val names = displayName?.split(" ")
-        val firstName = names?.dropLast(1)?.joinToString(" ")
-        val lastName = names?.lastOrNull()
+//        // Split the display name into first name and last name
+//        val names = displayName?.split(" ")
+//        val firstName = names?.dropLast(1)?.joinToString(" ")
+//        val lastName = names?.lastOrNull()
 
         // Update the UI with the user information
         val emailTextView = view.findViewById<TextView>(R.id.emailEt)
         emailTextView.text = email
 
-        val firstNameEditText = view.findViewById<TextInputEditText>(R.id.firstNameEt)
-        firstNameEditText.setText(firstName)
-
-        val lastNameEditText = view.findViewById<TextInputEditText>(R.id.lastNameEt)
-        lastNameEditText.setText(lastName)
+//        val firstNameEditText = view.findViewById<TextInputEditText>(R.id.firstNameEt)
+//        firstNameEditText.setText(firstName)
+//
+//        val lastNameEditText = view.findViewById<TextInputEditText>(R.id.lastNameEt)
+//        lastNameEditText.setText(lastName)
 
         // Load the user's photo into an ImageView using Glide or Picasso
         val photoUrl = user?.photoUrl

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/mapsFragment"
         android:icon="@drawable/ic_play"
-        android:title="Start" />
+        android:title="Start"/>
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"

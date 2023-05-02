@@ -104,14 +104,10 @@ class HomeFragment : Fragment() {
         // Access First Name
         val displayName = user?.displayName
         val firstNameParts = displayName?.split(" ")
-        val firstName = if (firstNameParts?.size ?: 0 >= 2) {
-            firstNameParts?.take(2)?.joinToString(" ")
-        } else {
-            firstNameParts?.getOrNull(0)
-        }
+        val firstName = firstNameParts?.getOrNull(0)
 
         val displayNameTextView = view.findViewById<TextView>(R.id.userName)
-        displayNameTextView.text = "$firstName"
+        displayNameTextView.text = firstName
 
         val savedIpAddress = getSavedIpAddress()
         updateWifiStatus(savedIpAddress)
