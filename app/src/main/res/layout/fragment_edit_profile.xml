@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.ProfileFragment">
+    tools:context=".ui.profile.EditProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,7 +70,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:clickable="false"
                 android:text="First Name"
                 android:textColor="@color/gray"
                 android:textSize="15sp">
@@ -79,8 +78,6 @@
                     android:id="@+id/firstNameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:clickable="false"
                     android:hint="First Name"
                     android:textSize="15sp" />
 
@@ -93,7 +90,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
-                android:clickable="false"
+                android:text="Last Name"
                 android:textColor="@color/gray"
                 android:textSize="15sp">
 
@@ -102,8 +99,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Last Name"
-                    android:editable="false"
-                    android:clickable="false"
                     android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +111,6 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Email Address"
-                android:clickable="false"
                 android:textColor="@color/gray"
                 android:textSize="15sp">
 
@@ -125,27 +119,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email Address"
-                    android:editable="false"
-                    android:clickable="false"
                     android:textSize="15sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/editBtn"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:text="Edit Profile"
-                android:backgroundTint="@color/md_theme_light_card_primary" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Change Password"
+                app:hintTextColor="@color/gray">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/historyBtn"
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/md_theme_light_card_primary"
-                android:text="View History"/>
+                android:text="Save Changes"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

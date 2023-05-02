@@ -217,22 +217,24 @@ class HomeFragment : Fragment() {
 
             // Fetch the latest history data
             historyRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
-                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val latestEntry = snapshot.children.first()
-                        val currLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
+                        val startLocation = latestEntry.child("startLoc").getValue(String::class.java) ?: "None"
+                        val endLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
                         val distance = latestEntry.child("distance").getValue(String::class.java) ?: "None"
                         val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
 
                         // Update the UI
-                        localBinding.currLocation.text = currLocation
-                        localBinding.distance.text = distance
-                        localBinding.duration.text = duration
+                        binding.startLocation.text = startLocation
+                        binding.endLocation.text = endLocation
+                        binding.distance.text = distance
+                        binding.duration.text = duration
                     } else {
-                        localBinding.currLocation.text = "None"
-                        localBinding.distance.text = "None"
-                        localBinding.duration.text = "None"
+                        binding.startLocation.text = "None"
+                        binding.endLocation.text = "None"
+                        binding.distance.text = "None"
+                        binding.duration.text = "None"
                     }
                 }
 
@@ -242,7 +244,8 @@ class HomeFragment : Fragment() {
             })
         } else {
             // Handle the case when the user is not logged in
-            binding.currLocation.text = "None"
+            binding.startLocation.text = "None"
+            binding.endLocation.text = "None"
             binding.distance.text = "None"
             binding.duration.text = "None"
         }

@@ -57,7 +57,7 @@ class HistoryFragment : Fragment() {
                         val endLoc = child.child("endLoc").getValue(String::class.java) ?: ""
                         val elapsedTime = child.child("elapsedTime").getValue(String::class.java) ?: ""
                         val distance = child.child("distance").getValue(String::class.java) ?: ""
-                        historyItems.add(HistoryItem(date, startLoc, endLoc, elapsedTime, distance))
+                        historyItems.add(0,HistoryItem(date, startLoc, endLoc, elapsedTime, distance))
                     }
                     adapter.setHistoryItems(historyItems)
                 }
