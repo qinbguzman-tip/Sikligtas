@@ -105,10 +105,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private val hostIP: String = "192.168.43.189"
 
     private val dataBuffer = LinkedList<String>()
-    private var previousDistance: String? = null
+    private var previousId: String? = null
     private var previousType: String? = null
-    private var lastAlertTime: Long = 0
-    private val minAlertInterval: Long = 5000
 
     enum class Direction {
         LEFT, RIGHT, BACK
@@ -454,59 +452,51 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             val distance = String.format("%.2f", meters).toDouble().toString()
 
             val hazard = outputList[3]
+            val id = outputList[4]
 
             if (hazard == "true") {
-                alertHazard(distance, type, direction)
+                alertHazard(distance, type, direction, id)
             } else {
                 Log.d("Alert", "Not Hazard")
             }
         }
     }
 
-    private fun alertHazard(distance: String, type: String, direction: Direction) {
-        val currentTime = System.currentTimeMillis()
+    private fun alertHazard(distance: String, type: String, direction: Direction, id: String) {
+        if (id != previousId || type != previousType) {
+            previousId = id
+            previousType = type
 
-        if (currentTime - lastAlertTime >= minAlertInterval) {
+            tts = TextToSpeech(requireContext()) { status ->
+                if (status == TextToSpeech.SUCCESS) {
+                    tts.apply {
+                        setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                            override fun onStart(utteranceId: String) {
+                                showAlert(distance, type, direction)
+                            }
 
-            if (distance != previousDistance || type != previousType) {
-                previousDistance = distance
-                previousType = type
+                            override fun onDone(utteranceId: String) {
+                                tts.shutdown()
+                            }
 
-                lastAlertTime = currentTime
-
-                tts = TextToSpeech(requireContext()) { status ->
-                    if (status == TextToSpeech.SUCCESS) {
-                        tts.apply {
-                            setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                                override fun onStart(utteranceId: String) {
-                                    showAlert(distance, type, direction)
-                                }
-
-                                override fun onDone(utteranceId: String) {
-                                    tts.shutdown()
-                                }
-
-                                @Deprecated("Deprecated in Java")
-                                override fun onError(utteranceId: String) {
-                                    tts.shutdown()
-                                }
-                            })
-                            val params = HashMap<String, String>()
-                            params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
-                            speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
-                            setSpeechRate(1.5f)
-                        }
-                    } else {
-                        Log.e("TTS", "TextToSpeech initialization failed")
+                            @Deprecated("Deprecated in Java")
+                            override fun onError(utteranceId: String) {
+                                tts.shutdown()
+                            }
+                        })
+                        val params = HashMap<String, String>()
+                        params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
+                        speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
+                        setSpeechRate(1.5f)
                     }
+                } else {
+                    Log.e("TTS", "TextToSpeech initialization failed")
                 }
-
-                Log.d("Alert", "Received Alert: $distance, $type, ${direction.name}")
-            } else {
-                Log.d("Alert", "No Alert")
             }
+
+            Log.d("Alert", "Received Alert: $distance, $type, ${direction.name}")
         } else {
-            Log.d("Alert", "Min interval not passed")
+            Log.d("Alert", "No Alert")
         }
     }
 

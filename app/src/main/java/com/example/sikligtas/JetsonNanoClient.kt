@@ -85,9 +85,10 @@ class JetsonNanoClient(host: String, port: Int) {
         val direction = outputList[1]
         val distance = outputList[2]
         val hazard = outputList[3]
+        val id = outputList[4]
 
         // Call the onDataReceived() function of the listener with the extracted parameters
-        onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard")
+        onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard,$id")
 
         Log.d("JetsonNanoClient", "Received data: $data")
     }
