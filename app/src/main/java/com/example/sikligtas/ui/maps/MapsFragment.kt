@@ -106,7 +106,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private val dataBuffer = LinkedList<String>()
     private var previousId: String? = null
-    private var previousType: String? = null
+    private var isAlerting = false
 
     enum class Direction {
         LEFT, RIGHT, BACK
@@ -454,18 +454,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
             val hazard = outputList[3]
             val id = outputList[4]
 
-            if (hazard == "true") {
-                alertHazard(distance, type, direction, id)
-            } else {
-                Log.d("Alert", "Not Hazard")
+            if (!isAlerting) {
+                // Only process data if not currently alerting
+                if (hazard == "true") {
+                    alertHazard(distance, type, direction, id)
+                } else {
+                    Log.d("Alert", "Not Hazard")
+                }
             }
         }
     }
 
     private fun alertHazard(distance: String, type: String, direction: Direction, id: String) {
-        if (id != previousId || type != previousType) {
+        if (id != previousId) {
+            // Set the alert status flag
+            isAlerting = true
+
             previousId = id
-            previousType = type
 
             tts = TextToSpeech(requireContext()) { status ->
                 if (status == TextToSpeech.SUCCESS) {
@@ -477,13 +482,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
                             override fun onDone(utteranceId: String) {
                                 tts.shutdown()
+
+                                // Reset the alert status flag after alert completion
+                                isAlerting = false
+
+                                // Process remaining buffered data
+                                processBufferedData()
                             }
 
                             @Deprecated("Deprecated in Java")
                             override fun onError(utteranceId: String) {
                                 tts.shutdown()
+
+                                // Reset the alert status flag after alert completion
+                                isAlerting = false
+
+                                // Process remaining buffered data
+                                processBufferedData()
                             }
                         })
+
                         val params = HashMap<String, String>()
                         params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
                         speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
@@ -491,6 +509,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     }
                 } else {
                     Log.e("TTS", "TextToSpeech initialization failed")
+
+                    // Reset the alert status flag after initialization failure
+                    isAlerting = false
+
+                    // Process remaining buffered data
+                    processBufferedData()
                 }
             }
 
