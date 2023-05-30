@@ -108,7 +108,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private val alertQueue: Queue<String> = LinkedList()
 
     private var previousId: String? = null
-    private var previousType: String? = null
 
     enum class Direction {
         LEFT, RIGHT, BACK
@@ -477,9 +476,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         if (alertQueue.isNotEmpty()) {
             val nextId = alertQueue.peek() // Get the next ID from the queue without removing it
 
-            if (nextId != previousId || type != previousType) {
+            if (nextId != previousId) {
                 previousId = nextId
-                previousType = type
 
                 tts = TextToSpeech(requireContext()) { status ->
                     if (status == TextToSpeech.SUCCESS) {
