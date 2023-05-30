@@ -10,6 +10,8 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -59,7 +61,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fetchLatestHistoryData()
+        val updateInfoHandler = Handler(Looper.getMainLooper())
+
+        fetchLatestHistoryData(updateInfoHandler)
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -76,7 +80,7 @@ class HomeFragment : Fragment() {
             settingsClient.checkLocationSettings(locationSettingsRequest).addOnSuccessListener {
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
-                        fetchWeatherData(location.latitude, location.longitude)
+                        fetchWeatherData(location.latitude, location.longitude, updateInfoHandler)
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -194,7 +198,7 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun fetchLatestHistoryData() {
+    private fun fetchLatestHistoryData(updateInfoHandler: Handler) {
         // Access the Firebase instances
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance("https://sikligtas-default-rtdb.asia-southeast1.firebasedatabase.app/")
@@ -215,19 +219,24 @@ class HomeFragment : Fragment() {
                         val distance = latestEntry.child("distance").getValue(String::class.java) ?: "None"
                         val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
 
-                        // Update the UI
-                        _binding?.let { binding ->
-                            binding.startLocation.text = startLocation
-                            binding.endLocation.text = endLocation
-                            binding.distance.text = distance
-                            binding.duration.text = duration
+                        // Update the UI using the updateInfoHandler
+                        updateInfoHandler.post {
+                            _binding?.let { binding ->
+                                binding.startLocation.text = startLocation
+                                binding.endLocation.text = endLocation
+                                binding.distance.text = distance
+                                binding.duration.text = duration
+                            }
                         }
                     } else {
-                        _binding?.let { binding ->
-                            binding.startLocation.text = "None"
-                            binding.endLocation.text = "None"
-                            binding.distance.text = "None"
-                            binding.duration.text = "None"
+                        // Update the UI with "None" values using the updateInfoHandler
+                        updateInfoHandler.post {
+                            _binding?.let { binding ->
+                                binding.startLocation.text = "None"
+                                binding.endLocation.text = "None"
+                                binding.distance.text = "None"
+                                binding.duration.text = "None"
+                            }
                         }
                     }
                 }
@@ -237,15 +246,17 @@ class HomeFragment : Fragment() {
                 }
             })
         } else {
-            // Handle the case when the user is not logged in
-            binding.startLocation.text = "None"
-            binding.endLocation.text = "None"
-            binding.distance.text = "None"
-            binding.duration.text = "None"
+            // Handle the case when the user is not logged in by updating the UI directly
+            _binding?.let { binding ->
+                binding.startLocation.text = "None"
+                binding.endLocation.text = "None"
+                binding.distance.text = "None"
+                binding.duration.text = "None"
+            }
         }
     }
 
-    private fun fetchWeatherData(latitude: Double, longitude: Double) = lifecycleScope.launch {
+    private fun fetchWeatherData(latitude: Double, longitude: Double, updateInfoHandler: Handler) = lifecycleScope.launch {
         val weatherAPI =
             resources.getString(R.string.weather_api_key) // Replace with your OpenWeatherMap API key
 
@@ -271,16 +282,18 @@ class HomeFragment : Fragment() {
             val weatherIcon = weather.getString("icon")
             val iconUrl = "https://openweathermap.org/img/w/$weatherIcon.png"
 
-            /* Populating extracted data into our views */
-            binding.location.text = currentLocation
-            binding.status.text =
-                weatherDescription.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-            binding.temp.text = temp
-            Picasso.get().load(iconUrl).fit().into(binding.weatherIC)
+            /* Update the UI using the updateInfoHandler */
+            updateInfoHandler.post {
+                /* Populating extracted data into our views */
+                binding.location.text = currentLocation
+                binding.status.text =
+                    weatherDescription.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                binding.temp.text = temp
+                Picasso.get().load(iconUrl).fit().into(binding.weatherIC)
 
-            /* Views populated, Hiding the loader, Showing the main design */
-            binding.weatherLayout.visibility = View.VISIBLE
-
+                /* Views populated, Hiding the loader, Showing the main design */
+                binding.weatherLayout.visibility = View.VISIBLE
+            }
         } catch (e: Exception) {
             // Handle the error
         }
