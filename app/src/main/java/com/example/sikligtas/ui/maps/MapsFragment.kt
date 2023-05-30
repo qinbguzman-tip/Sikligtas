@@ -505,7 +505,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                             val params = HashMap<String, String>()
                             params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
                             speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
-                            setSpeechRate(1.5f)
                         }
                     } else {
                         Log.e("TTS", "TextToSpeech initialization failed")
