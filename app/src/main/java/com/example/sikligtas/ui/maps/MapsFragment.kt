@@ -105,6 +105,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     private val hostIP: String = "192.168.43.189"
 
     private val dataBuffer = LinkedList<String>()
+    private val alertQueue: Queue<String> = LinkedList()
+
     private var previousId: String? = null
     private var previousType: String? = null
 
@@ -463,40 +465,60 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
     }
 
     private fun alertHazard(distance: String, type: String, direction: Direction, id: String) {
-        if (id != previousId || type != previousType) {
-            previousId = id
-            previousType = type
-
-            tts = TextToSpeech(requireContext()) { status ->
-                if (status == TextToSpeech.SUCCESS) {
-                    tts.apply {
-                        setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                            override fun onStart(utteranceId: String) {
-                                showAlert(distance, type, direction)
-                            }
-
-                            override fun onDone(utteranceId: String) {
-                                tts.shutdown()
-                            }
-
-                            @Deprecated("Deprecated in Java")
-                            override fun onError(utteranceId: String) {
-                                tts.shutdown()
-                            }
-                        })
-                        val params = HashMap<String, String>()
-                        params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
-                        speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
-                        setSpeechRate(1.5f)
-                    }
-                } else {
-                    Log.e("TTS", "TextToSpeech initialization failed")
-                }
-            }
-
-            Log.d("Alert", "Received Alert: $distance, $type, ${direction.name}")
+        if (!alertQueue.contains(id)) {
+            alertQueue.add(id)
+            processNextAlert(distance, type, direction)
         } else {
             Log.d("Alert", "No Alert")
+        }
+    }
+
+    private fun processNextAlert(distance: String, type: String, direction: Direction) {
+        if (alertQueue.isNotEmpty()) {
+            val nextId = alertQueue.peek() // Get the next ID from the queue without removing it
+
+            if (nextId != previousId || type != previousType) {
+                previousId = nextId
+                previousType = type
+
+                tts = TextToSpeech(requireContext()) { status ->
+                    if (status == TextToSpeech.SUCCESS) {
+                        tts.apply {
+                            setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                                override fun onStart(utteranceId: String) {
+                                    showAlert(distance, type, direction)
+                                }
+
+                                override fun onDone(utteranceId: String) {
+                                    tts.shutdown()
+                                    alertQueue.remove() // Remove the processed ID from the queue
+                                    processNextAlert(distance, type, direction) // Process the next alert in the queue
+                                }
+
+                                @Deprecated("Deprecated in Java")
+                                override fun onError(utteranceId: String) {
+                                    tts.shutdown()
+                                    alertQueue.remove() // Remove the processed ID from the queue
+                                    processNextAlert(distance, type, direction) // Process the next alert in the queue
+                                }
+                            })
+                            val params = HashMap<String, String>()
+                            params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "stringId"
+                            speak(getString(R.string.hazard_info, distance, type, direction.name), TextToSpeech.QUEUE_FLUSH, params)
+                            setSpeechRate(1.5f)
+                        }
+                    } else {
+                        Log.e("TTS", "TextToSpeech initialization failed")
+                        alertQueue.remove() // Remove the failed ID from the queue
+                        processNextAlert(distance, type, direction) // Process the next alert in the queue
+                    }
+                }
+
+                Log.d("Alert", "Received Alert: $distance, $type, ${direction.name}")
+            } else {
+                alertQueue.remove() // Remove the duplicate ID from the queue
+                processNextAlert(distance, type, direction) // Process the next alert in the queue
+            }
         }
     }
 
