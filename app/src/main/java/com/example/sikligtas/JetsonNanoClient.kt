@@ -21,9 +21,14 @@ class JetsonNanoClient(host: String, port: Int) {
     private var socket: Socket? = null
     private var input: InputStream? = null
     private var isConnected = true
+    private var initialDataReceived = false
 
     private var onDataReceivedListener: OnDataReceivedListener? = null
     private var onConnectionErrorListener: OnConnectionErrorListener? = null
+
+    fun isInitialDataReceived(): Boolean {
+        return initialDataReceived
+    }
 
     fun setOnDataReceivedListener(listener: OnDataReceivedListener) {
         onDataReceivedListener = listener
@@ -79,18 +84,22 @@ class JetsonNanoClient(host: String, port: Int) {
     }
 
     private fun processData(data: String) {
-        // Process data received from Jetson Nano
-        val outputList: List<String> = data.split(",")
-        val type = outputList[0]
-        val direction = outputList[1]
-        val distance = outputList[2]
-        val hazard = outputList[3]
-        val id = outputList[4]
+        if (data.trim() == "success") {
+            initialDataReceived = true
+        } else {
+            // Original data processing logic...
+            val outputList: List<String> = data.split(",")
+            val type = outputList[0]
+            val direction = outputList[1]
+            val distance = outputList[2]
+            val hazard = outputList[3]
+            val id = outputList[4]
 
-        // Call the onDataReceived() function of the listener with the extracted parameters
-        onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard,$id")
+            // Call the onDataReceived() function of the listener with the extracted parameters
+            onDataReceivedListener?.onDataReceived("$type,$direction,$distance,$hazard,$id")
 
-        Log.d("JetsonNanoClient", "Received data: $data")
+            Log.d("JetsonNanoClient", "Received data: $data")
+        }
     }
 
     fun disconnect() {

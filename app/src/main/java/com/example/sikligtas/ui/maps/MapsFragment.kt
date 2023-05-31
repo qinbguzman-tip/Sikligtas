@@ -69,8 +69,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.tapadoo.alerter.Alerter
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -328,6 +328,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
         builder.show()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun onStartButtonClicked() {
         if (hasBackgroundLocationPermission(requireContext())) {
             val hostIP = getSavedIpAddress()
@@ -336,21 +337,38 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 jnc!!.setOnDataReceivedListener(this)
                 jnc!!.setOnConnectionErrorListener(object : OnConnectionErrorListener {
                     override fun onConnectionError(exception: Exception) {
-                        Alerter.create(requireActivity())
-                            .setTitle("Connection Error")
-                            .setText("Failed to connect to Jetson Nano, check the device if turned ON or if the IP Address is correct.")
-                            .setBackgroundColorRes(R.color.orange)
-                            .setDuration(10000)
-                            .setIcon(R.drawable.ic_error)
-                            .show()
+                        val builder = AlertDialog.Builder(requireContext())
+                        builder.setTitle("Failed to Connect")
+                        builder.setMessage("\u2022 Check if the device is turned ON\n\u2022 Verify if the IP Address is correct.")
+                        builder.setIcon(R.drawable.ic_error)
+                        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                        builder.show()
                     }
                 })
-                startCountDown()
 
-                binding.bottomSheetMaps.startButton.disable()
-                binding.bottomSheetMaps.startButton.hide()
-                binding.bottomSheetMaps.stopButton.show()
-                binding.bottomSheetMaps.homeButton.isEnabled = false
+                GlobalScope.launch(Dispatchers.Main) {
+                    delay(1000)  // Wait for 1 second
+
+                    // Check if initial "success" data was received
+                    if (jnc?.isInitialDataReceived() == true) {
+                        startCountDown()
+
+                        binding.bottomSheetMaps.startButton.disable()
+                        binding.bottomSheetMaps.startButton.hide()
+                        binding.bottomSheetMaps.stopButton.show()
+                        binding.bottomSheetMaps.homeButton.isEnabled = false
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            // Create an AlertDialog for the connection error
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setTitle("Failed to Connect")
+                            builder.setMessage("\u2022 Check if the device is turned ON\n\u2022 Verify if the IP Address is correct.")
+                            builder.setIcon(R.drawable.ic_error)
+                            builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                            builder.show()
+                        }
+                    }
+                }
             } else {
                 showIpErrorDialog()
             }
