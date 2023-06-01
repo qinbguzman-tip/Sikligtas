@@ -93,4 +93,8 @@
         <item name="android:minHeight">12dp</item>
         <item name="iconGravity">textStart</item>
     </style>
+
+    <style name="Alerter_textAppearance">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

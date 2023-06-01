@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -337,12 +338,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                 jnc!!.setOnDataReceivedListener(this)
                 jnc!!.setOnConnectionErrorListener(object : OnConnectionErrorListener {
                     override fun onConnectionError(exception: Exception) {
-                        val builder = AlertDialog.Builder(requireContext())
-                        builder.setTitle("Failed to Connect")
-                        builder.setMessage("\u2022 Check if the device is turned ON\n\u2022 Verify if the IP Address is correct.")
-                        builder.setIcon(R.drawable.ic_error)
-                        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                        builder.show()
+                        activity?.runOnUiThread {
+                            Alerter.create(requireActivity())
+                                .setTitle("Connection Error")
+                                .setText("Failed to connect to Jetson Nano, check the device if turned ON or if the IP Address is correct.")
+                                .setBackgroundColorRes(R.color.orange)
+                                .setDuration(10000)
+                                .setIcon(R.drawable.ic_error)
+                                .show()
+                        }
                     }
                 })
 
@@ -352,21 +356,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
                     // Check if initial "success" data was received
                     if (jnc?.isInitialDataReceived() == true) {
                         startCountDown()
+                        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
                         binding.bottomSheetMaps.startButton.disable()
                         binding.bottomSheetMaps.startButton.hide()
                         binding.bottomSheetMaps.stopButton.show()
                         binding.bottomSheetMaps.homeButton.isEnabled = false
                     } else {
-                        withContext(Dispatchers.Main) {
-                            // Create an AlertDialog for the connection error
-                            val builder = AlertDialog.Builder(requireContext())
-                            builder.setTitle("Failed to Connect")
-                            builder.setMessage("\u2022 Check if the device is turned ON\n\u2022 Verify if the IP Address is correct.")
-                            builder.setIcon(R.drawable.ic_error)
-                            builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                            builder.show()
-                        }
+                        val builder = AlertDialog.Builder(requireContext())
+                        builder.setTitle("Failed to Start")
+                        builder.setMessage(R.string.connection_error)
+                        builder.setIcon(R.drawable.ic_error)
+                        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                        builder.show()
                     }
                 }
             } else {
@@ -379,6 +381,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
     private fun onStopButtonClicked() {
         stopForegroundService()
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         stopAlert()
         disconnectJetsonNanoClient()
@@ -551,7 +554,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         val distanceValue = distance.toDoubleOrNull() ?: return
         when {
-            distanceValue > 1.50 -> vAlert.setBackgroundResource(R.color.yellow)
+            distanceValue > 1.50 -> {
+                vAlert.setBackgroundResource(R.color.yellow)
+                vAlert.setTextAppearance(R.style.Alerter_textAppearance)
+            }
             distanceValue in 1.00..1.50 -> vAlert.setBackgroundResource(R.color.orange)
             else -> vAlert.setBackgroundResource(R.color.md_theme_light_error)
         }

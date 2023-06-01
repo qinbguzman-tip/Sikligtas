@@ -60,4 +60,8 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+
+    <style name="Alerter_textAppearance">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

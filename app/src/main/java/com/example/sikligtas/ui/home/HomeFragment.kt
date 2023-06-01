@@ -182,8 +182,19 @@ class HomeFragment : Fragment() {
             binding.wifiConnect.text = "Change the Device IP"
 
             binding.wifiConnect.setOnClickListener {
-                removeIpAddress()
-                updateWifiStatus(null)
+                val alertDialog = AlertDialog.Builder(requireContext())
+                    .setTitle("Confirmation")
+                    .setMessage("Are you sure you want to change the IP address?")
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        removeIpAddress()
+                        updateWifiStatus(null)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                alertDialog.show()
             }
         } else {
             binding.wifiIcon.setImageResource(R.drawable.ic_wifi_off)
@@ -214,10 +225,10 @@ class HomeFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val latestEntry = snapshot.children.first()
-                        val startLocation = latestEntry.child("startLoc").getValue(String::class.java) ?: "None"
-                        val endLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "None"
-                        val distance = latestEntry.child("distance").getValue(String::class.java) ?: "None"
-                        val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "None"
+                        val startLocation = latestEntry.child("startLoc").getValue(String::class.java) ?: "..."
+                        val endLocation = latestEntry.child("endLoc").getValue(String::class.java) ?: "..."
+                        val distance = latestEntry.child("distance").getValue(String::class.java) ?: "00.00"
+                        val duration = latestEntry.child("elapsedTime").getValue(String::class.java) ?: "00:00:00"
 
                         // Update the UI using the updateInfoHandler
                         updateInfoHandler.post {
@@ -232,10 +243,10 @@ class HomeFragment : Fragment() {
                         // Update the UI with "None" values using the updateInfoHandler
                         updateInfoHandler.post {
                             _binding?.let { binding ->
-                                binding.startLocation.text = "None"
-                                binding.endLocation.text = "None"
-                                binding.distance.text = "None"
-                                binding.duration.text = "None"
+                                binding.startLocation.text = "..."
+                                binding.endLocation.text = "..."
+                                binding.distance.text = "00.00"
+                                binding.duration.text = "00.00"
                             }
                         }
                     }
@@ -248,10 +259,10 @@ class HomeFragment : Fragment() {
         } else {
             // Handle the case when the user is not logged in by updating the UI directly
             _binding?.let { binding ->
-                binding.startLocation.text = "None"
-                binding.endLocation.text = "None"
-                binding.distance.text = "None"
-                binding.duration.text = "None"
+                binding.startLocation.text = "..."
+                binding.endLocation.text = "..."
+                binding.distance.text = "00.00"
+                binding.duration.text = "00.00"
             }
         }
     }
