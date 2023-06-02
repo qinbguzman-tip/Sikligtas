@@ -554,10 +554,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButto
 
         val distanceValue = distance.toDoubleOrNull() ?: return
         when {
-            distanceValue > 1.50 -> {
-                vAlert.setBackgroundResource(R.color.yellow)
-                vAlert.setTextAppearance(R.style.Alerter_textAppearance)
-            }
+            distanceValue > 1.50 -> vAlert.setBackgroundResource(R.color.yellow)
             distanceValue in 1.00..1.50 -> vAlert.setBackgroundResource(R.color.orange)
             else -> vAlert.setBackgroundResource(R.color.md_theme_light_error)
         }
