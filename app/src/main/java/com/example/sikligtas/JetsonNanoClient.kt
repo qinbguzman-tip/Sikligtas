@@ -61,9 +61,9 @@ class JetsonNanoClient(host: String, port: Int) {
                                 processedKeys.add(key) // Add the key to the set of processed keys
                                 withContext(Dispatchers.Main) {
                                     processData(data)
-                                    sendData("OK") // For response time
                                 }
                             }
+                            sendData("OK") // For response time
                         } else {
                             break
                         }
