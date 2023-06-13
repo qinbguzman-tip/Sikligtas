@@ -3,6 +3,7 @@ package com.example.sikligtas
 import android.util.Log
 import kotlinx.coroutines.*
 import java.io.InputStream
+import java.io.OutputStream
 import java.net.ConnectException
 import java.net.Socket
 
@@ -20,6 +21,7 @@ class JetsonNanoClient(host: String, port: Int) {
 
     private var socket: Socket? = null
     private var input: InputStream? = null
+    private var output: OutputStream? = null
     private var isConnected = true
     private var initialDataReceived = false
 
@@ -44,6 +46,7 @@ class JetsonNanoClient(host: String, port: Int) {
                 try {
                     socket = Socket(host, port)
                     input = socket!!.getInputStream()
+                    output = socket!!.getOutputStream() // For response time
 
                     val bufferSize = 1024 // Adjust the buffer size based on your requirements
                     val buffer = ByteArray(bufferSize)
@@ -58,6 +61,7 @@ class JetsonNanoClient(host: String, port: Int) {
                                 processedKeys.add(key) // Add the key to the set of processed keys
                                 withContext(Dispatchers.Main) {
                                     processData(data)
+                                    sendData("OK") // For response time
                                 }
                             }
                         } else {
@@ -102,10 +106,23 @@ class JetsonNanoClient(host: String, port: Int) {
         }
     }
 
+    private suspend fun sendData(data: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                output?.write(data.toByteArray())
+                output?.flush()
+                Log.d("JetsonNanoClient", "Sent data: $data")
+            } catch (e: Exception) {
+                Log.e("JetsonNanoClient", "Failed to send data", e)
+            }
+        }
+    }
+
     fun disconnect() {
         isConnected = false
         socket?.close()
         input?.close()
+        output?.close()
 
         onDataReceivedListener = null
     }
